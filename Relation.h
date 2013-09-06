@@ -7,19 +7,20 @@
 #include "Attribute.h"
 #include "Entity.h"
 
-
 using namespace std;
 
 class Relation{
-  public:
-    string name;
-    vector<Entity> entities;
-    vector<Attribute> attributes;
+	vector<Entity> entity;			//vector of entities using this relation
+	vector<Attribute> attribute;	//vector of attribues of this relation
+	string Name;					//name of relation
 
-    Attribute addAttribute(Attribute a);
-    Attribute removeAttribute(Attribute a);
+	Relation(string n);
+	~Relation(string n);
 
-    bool operator==(const Relation &other);
+	Entity addEntity(Entity e);
+	Entity removeEntity(Entity e);
+	Attribute addAttribute(Attribute a);
+	Attribute removeAttribute(Attribute a);
 };
 
 #endif
