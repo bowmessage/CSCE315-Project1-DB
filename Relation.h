@@ -13,6 +13,10 @@ class Relation{
     string name;					//name of relation
     vector<Attribute> attributes; //vector of attributes of this relation
     vector< vector<string> > tuples;
+    //All values are strings.
+    //If it is a blank string, NULL equivalent.
+    //If it sarts with !..., parse as int.
+    //If it starts with !!..., parse with string that starts "!.."
 
     Relation(string n);
     ~Relation();
