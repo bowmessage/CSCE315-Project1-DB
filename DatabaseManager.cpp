@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "DatabaseManager.h"
 
 using namespace std;
@@ -55,6 +56,28 @@ bool DatabaseManager::deleteRelation(string name){
     database.removeRelation(name);
   }
   else return false;
+}
+
+void DatabaseManager::show(string name){
+   Relation* curRelation = database.getRelationByName(name);
+   if(curRelation == NULL){
+	  cout <<"Relation does not exist" << endl;
+	  return;
+   }
+   cout << "|			" << name << "			|" << endl;
+   for(int i = 0; i < curRelation->tuples.size(); j++){
+      for(int j = 0; j < curRelation->tuples[i].size(); i++){
+	     cout << "|" << curRelation->tuples[i][j] << " ";
+	  }
+   }
+   return;
+}
+
+void DatabaseManager::rename(vector<string> newNames, Relation r){
+	for(int i = 0; i < r.attributes.size(); i++){
+		r.attributes[i].name = newNames[i];
+	}
+	return;
 }
 
 vector< vector<string> >* DatabaseManager::select(string relationName, string op1, string comparison, string op2){
