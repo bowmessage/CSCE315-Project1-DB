@@ -11,14 +11,15 @@
 using namespace std;
 
 class Database{
-  vector<Relation> relations;
+  public:
+    vector<Relation> relations;
 
-  Database();
-  ~Database();
+    Database();
+    ~Database();
 
-  Relation addRelation(Relation r);
-  Relation removeRelation(Relation r);
-  Relation getRelationByName(string n);
+    Relation addRelation(Relation r);
+    Relation removeRelation(Relation r);
+    Relation getRelationByName(string n);
 };
 
 #endif

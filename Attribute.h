@@ -9,6 +9,9 @@ using namespace std;
 class Attribute{
   public:
 
+    Attribute();
+    ~Attribute();
+
 
     int intValue;
     char* charValue;
@@ -16,6 +19,12 @@ class Attribute{
 
     string name;
 
+    int updateIntValue(int i);
+    char* updateCharValue(char* c);
+
+    int getIntValue();
+    char* getCharValue();
+    
     bool operator==(const Attribute &other);
 };
 
