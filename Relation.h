@@ -20,7 +20,10 @@ class Relation{
     //If it starts with !!..., parse with string that starts "!.."
 
     Relation(string n);
+    Relation(string n, vector<Attribute> a);
     Relation(string n, vector<Attribute> a, vector<Attribute*> k);
+    Relation(string n, vector<Attribute> a, vector< vector<string> > t);
+    Relation(string n, vector<Attribute> a, vector<Attribute*> k, vector< vector<string> > t);
     ~Relation();
 
     Attribute addAttribute(Attribute a);

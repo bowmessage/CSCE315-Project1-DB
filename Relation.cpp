@@ -7,10 +7,26 @@ Relation::Relation(string n){
 		name = n;
 }
 
+Relation::Relation(string n, vector<Attribute> a){
+		name = n;
+    attributes = a;
+}
+
 Relation::Relation(string n, vector<Attribute> a, vector<Attribute*> k){
 		name = n;
     attributes = a;
     keys = k;
+}
+Relation::Relation(string n, vector<Attribute> a, vector< vector<string> > t){
+		name = n;
+    attributes = a;
+    tuples = t;
+}
+Relation::Relation(string n, vector<Attribute> a, vector<Attribute*> k, vector< vector<string> > t){
+		name = n;
+    attributes = a;
+    keys = k;
+    tuples = t;
 }
 
 //removes a relation of name "n"

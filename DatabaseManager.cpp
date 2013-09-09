@@ -57,19 +57,19 @@ bool DatabaseManager::deleteRelation(string name){
   else return false;
 }
 
-vector< vector<string> >* DatabaseManager::select(string relationName, string op1, string comparison, string op2){
+Relation* DatabaseManager::select(string relationName, string op1, string comparison, string op2){
   Relation* curRelation = database.getRelationByName(relationName);
-  vector< vector<string> >* ret = new vector< vector<string> >();
+  vector< vector<string> > retTuples;
   if(curRelation != NULL){
     if(comparison == "=="){
       //op1 will be an attribute name..
       int attrIndex = curRelation->getAttributeIndexByName(op1);
       for(int i = 0; i < curRelation->tuples.size(); i++){
         if(curRelation->tuples[i][attrIndex] == op2){
-          ret->push_back(curRelation->tuples[i]);
+          retTuples.push_back(curRelation->tuples[i]);
         }
       }
-      return ret;
+      return new Relation(relationName, curRelation->attributes, retTuples);
     }
     else{
       //Comparison string not found
@@ -79,20 +79,22 @@ vector< vector<string> >* DatabaseManager::select(string relationName, string op
   } else return NULL;
 }
 
-vector< vector<string> >* DatabaseManager::project(string relationName, vector<string> attributeNames){
+Relation* DatabaseManager::project(string relationName, vector<string> attributeNames){
   Relation* curRelation = database.getRelationByName(relationName);
-  vector< vector<string> >* ret = new vector< vector<string> >();
+  vector<Attribute> retAttributes;
+  vector< vector<string> > retTuples;
   if(curRelation != NULL){
     for(int i = 0; i < curRelation->tuples.size(); i++){
       vector<string> rowToAdd;
       for(int j = 0; j < curRelation->attributes.size(); j++){
         if(find(attributeNames.begin(), attributeNames.end(), curRelation->attributes[j].name) != attributeNames.end()){
+          retAttributes.push_back(curRelation->attributes[j]);
           rowToAdd.push_back(curRelation->tuples[i][j]);
         }
       }
-      ret->push_back(rowToAdd);
+      retTuples.push_back(rowToAdd);
     }
-    return ret;
+    return new Relation(relationName, retAttributes, retTuples);
 
     //Relation with given name not found
   } else return NULL;
