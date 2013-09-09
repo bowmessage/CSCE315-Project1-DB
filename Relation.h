@@ -25,6 +25,8 @@ class Relation{
 
     Attribute addAttribute(Attribute a);
     Attribute removeAttribute(Attribute a);
+    Attribute* getAttributeByName(string n);
+    int getAttributeIndexByName(string n);
 
     bool operator==(const Relation &other);
 };

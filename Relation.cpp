@@ -50,6 +50,25 @@ Attribute Relation::removeAttribute(Attribute a){
   return a;
 }
 
+Attribute* Relation::getAttributeByName(string n){
+  for(int i = 0; i < attributes.size(); i++){
+    if(attributes[i].name == n){
+      return &attributes[i];
+    }
+  }
+  return NULL;
+}
+
+int Relation::getAttributeIndexByName(string n){
+  for(int i = 0; i < attributes.size(); i++){
+    if(attributes[i].name == n){
+      return i;
+    }
+  }
+  return -1;
+}
+
+
 bool Relation::operator==(const Relation &other){
   //TODO implement this
   return false;
