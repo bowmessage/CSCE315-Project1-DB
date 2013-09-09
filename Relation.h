@@ -12,6 +12,7 @@ class Relation{
   public:
     string name;					//name of relation
     vector<Attribute> attributes; //vector of attributes of this relation
+    vector<Attribute*> keys;
     vector< vector<string> > tuples;
     //All values are strings.
     //If it is a blank string, NULL equivalent.
@@ -19,6 +20,7 @@ class Relation{
     //If it starts with !!..., parse with string that starts "!.."
 
     Relation(string n);
+    Relation(string n, vector<Attribute> a, vector<Attribute*> k);
     ~Relation();
 
     Attribute addAttribute(Attribute a);

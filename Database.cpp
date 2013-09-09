@@ -22,11 +22,11 @@ Relation Database::removeRelation(Relation r){
   return r;
 }
 
-Relation Database::getRelationByName(string n){
+Relation* Database::getRelationByName(string n){
   for(int i = 0; i < relations.size(); i++){
     if(relations[i].name == n){
-      return relations[i];
+      return &relations[i];
     }
   }
-  throw runtime_error("Relation by name " + n + " not found."); 
+  return NULL;
 }

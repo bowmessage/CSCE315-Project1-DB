@@ -14,16 +14,13 @@ class DatabaseManager{
 
     Database database;
 
-    Relation* currentRelation;
 
 
 
-    bool openRelation(string r);
-    bool closeRelation(string r);
-
-    //vector<vector<Attribute> >
-
-
+    //bool openRelation(string r);
+    //bool closeRelation(string r);
+    bool createTable(string name, vector<Attribute> attributes, vector<Attribute*> keys);
+    bool insertInto(string name, vector<string> literals);
 };
 
 

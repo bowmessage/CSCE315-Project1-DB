@@ -7,6 +7,7 @@
 using namespace std;
 
 class Attribute{
+
   public:
 
     Attribute();

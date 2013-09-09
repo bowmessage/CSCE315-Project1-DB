@@ -19,7 +19,7 @@ class Database{
 
     Relation addRelation(Relation r);
     Relation removeRelation(Relation r);
-    Relation getRelationByName(string n);
+    Relation* getRelationByName(string n);
 };
 
 #endif

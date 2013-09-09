@@ -7,6 +7,12 @@ Relation::Relation(string n){
 		name = n;
 }
 
+Relation::Relation(string n, vector<Attribute> a, vector<Attribute*> k){
+		name = n;
+    attributes = a;
+    keys = k;
+}
+
 //removes a relation of name "n"
 Relation::~Relation(){
   //Don't need to do these things as they're implicitly destructed (not pointer refrenced)
