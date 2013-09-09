@@ -15,22 +15,6 @@ Relation::~Relation(){
 	//attribute.erase();
 }
 
-//adds entity "e" to the relation of name "n"
-/*Entity Relation::addEntity(Entity e){
-	entities.push_back(e);
-	return e;
-}*/
-
-//removes entity "e" from relation "n"
-/*Entity Relation::removeEntity(Entity e){
-	for(int i = 0; i < entities.size(); i++){
-		if(e == entities[i]){
-      entities.erase(entities.begin()+i);
-			return e;
-    }
-	}
-}*/
-
 //adds attribute "a" to the relation of name "n"
 Attribute Relation::addAttribute(Attribute a){
 	attributes.push_back(a);

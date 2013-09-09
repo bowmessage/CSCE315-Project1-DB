@@ -13,18 +13,9 @@ class Attribute{
     ~Attribute();
 
 
-    int intValue;
-    char* charValue;
-    bool isInt;
-
+    bool isKey;
     string name;
 
-    int updateIntValue(int i);
-    char* updateCharValue(char* c);
-
-    int getIntValue();
-    char* getCharValue();
-    
     bool operator==(const Attribute &other);
 };
 
