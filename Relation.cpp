@@ -4,42 +4,50 @@ using namespace std;
 
 //creates a relation of name "n"
 Relation::Relation(string n){
-		Name = n;
+		name = n;
 }
 
 //removes a relation of name "n"
-Relation::~Relation(string n){
-	Name = NULL;
-	entity.erase();
-	attribute.erase();
+Relation::~Relation(){
+  //Don't need to do these things as they're implicitly destructed (not pointer refrenced)
+	//Name = NULL;
+	//entity.erase();
+	//attribute.erase();
 }
 
 //adds entity "e" to the relation of name "n"
 Entity Relation::addEntity(Entity e){
-	entity.push_back(e);
+	entities.push_back(e);
 	return e;
 }
 
 //removes entity "e" from relation "n"
 Entity Relation::removeEntity(Entity e){
-	for(int i = 0; i < entity.size(); i++){
-		if(e == entity[i]){
-			entity[i].erase();
+	for(int i = 0; i < entities.size(); i++){
+		if(e == entities[i]){
+      entities.erase(entities.begin()+i);
 			return e;
+    }
 	}
 }
 
 //adds attribute "a" to the relation of name "n"
 Attribute Relation::addAttribute(Attribute a){
-	attribute.push_back(a);
+	attributes.push_back(a);
 	return a;
 }
 
 //adds entity "e" to the relation of name "n"
 Attribute Relation::removeAttribute(Attribute a){
-	for(int i = 0; i < r.attribute.size(); i++){
-		if(a == r.attribute[i]){ 
-			attribute[i].erase();
+	for(int i = 0; i < attributes.size(); i++){
+		if(a == attributes[i]){ 
+      attributes.erase(attributes.begin()+i);
 			return a;
+    }
 	}
+}
+
+bool Relation::operator==(const Relation &other){
+  //TODO implement this
+  return false;
 }

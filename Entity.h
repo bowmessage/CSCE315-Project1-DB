@@ -22,6 +22,9 @@ class Entity{
     Attribute addAttribute(Attribute a);
     Attribute removeAttribute(Attribute a);
 
+    bool operator==(const Entity &other);
+
+
 };
 
 #endif

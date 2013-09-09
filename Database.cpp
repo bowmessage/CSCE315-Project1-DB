@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Database.h"
 
 Database::Database(){
@@ -27,5 +28,5 @@ Relation Database::getRelationByName(string n){
       return relations[i];
     }
   }
-  return NULL;
+  throw runtime_error("Relation by name " + n + " not found."); 
 }

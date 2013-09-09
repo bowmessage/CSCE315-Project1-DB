@@ -10,17 +10,20 @@
 using namespace std;
 
 class Relation{
-	vector<Entity> entity;			//vector of entities using this relation
-	vector<Attribute> attribute;	//vector of attribues of this relation
-	string Name;					//name of relation
+  public:
+    vector<Entity> entities;			//vector of entities using this relation vector<Attribute> attributes;	//vector of attribues of this relation
+    vector<Attribute> attributes; //vector of attributes of this relation
+    string name;					//name of relation
 
-	Relation(string n);
-	~Relation(string n);
+    Relation(string n);
+    ~Relation();
 
-	Entity addEntity(Entity e);
-	Entity removeEntity(Entity e);
-	Attribute addAttribute(Attribute a);
-	Attribute removeAttribute(Attribute a);
+    Entity addEntity(Entity e);
+    Entity removeEntity(Entity e);
+    Attribute addAttribute(Attribute a);
+    Attribute removeAttribute(Attribute a);
+
+    bool operator==(const Relation &other);
 };
 
 #endif

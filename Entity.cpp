@@ -19,3 +19,8 @@ Attribute Entity::removeAttribute(Attribute a){
     }
   }
 }
+
+bool Entity::operator==(const Entity &other){
+  //TODO implement this
+  return false;
+}

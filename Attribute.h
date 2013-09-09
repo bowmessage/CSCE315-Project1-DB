@@ -6,12 +6,14 @@
 
 using namespace std;
 
-template <class T>
 class Attribute{
   public:
 
 
-    T value;
+    int intValue;
+    char* charValue;
+    bool isInt;
+
     string name;
 
     bool operator==(const Attribute &other);
