@@ -7,7 +7,7 @@ DatabaseManager::DatabaseManager(){
 
 }
 
-~DatabaseManager::DatabaseManager(){
+DatabaseManager::~DatabaseManager(){
   //Nothing to delete.. workingRelation taken care of by database.
 }
 
@@ -15,7 +15,7 @@ DatabaseManager::DatabaseManager(){
 bool DatabaseManager::openRelation(string r){
   if(currentRelation == NULL){
     try{
-      currentRelation = database.getRelationByName(r);
+      currentRelation = &database.getRelationByName(r);
       return true;
     }
     catch(exception e){}

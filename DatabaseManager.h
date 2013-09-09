@@ -18,11 +18,10 @@ class DatabaseManager{
 
 
 
-    bool DatabaseManager::openRelation(string r);
-    bool DatabaseManager::closeRelation(string r);
+    bool openRelation(string r);
+    bool closeRelation(string r);
 
-    vector<vector<Attribute>>
-
+    //vector<vector<Attribute> >
 
 
 };
