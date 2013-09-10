@@ -12,6 +12,10 @@ class Relation{
   public:
     string name;					//name of relation
     vector<Attribute> attributes; //vector of attributes of this relation
+    Attribute* getAttribute(int x);
+    int size();
+
+
     vector<Attribute*> keys;
     vector< vector<string> > tuples;
     //All values are strings.

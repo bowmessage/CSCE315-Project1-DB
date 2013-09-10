@@ -46,6 +46,10 @@ Attribute Relation::addAttribute(Attribute a){
 	return a;
 }
 
+Attribute* Relation::getAttribute(int x){
+	return &attributes[x];
+}
+
 //adds entity "e" to the relation of name "n"
 Attribute Relation::removeAttribute(Attribute a){
   int colNumRemoved = 0;
@@ -64,6 +68,10 @@ Attribute Relation::removeAttribute(Attribute a){
     }
   }
   return a;
+}
+
+int Relation::size(){
+  return attributes.size();
 }
 
 Attribute* Relation::getAttributeByName(string n){

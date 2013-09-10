@@ -18,9 +18,10 @@ class DatabaseManager{
 
     bool createTable(string name, vector<Attribute> attributes, vector<Attribute*> keys);
     bool insertInto(string name, vector<string> literals);
-    bool deleteRelation(string name);
+    bool deleteTable(string name);
     void show(string name);
-	  void rename(vector<string> newNames, Relation r);
+    void show(Relation* r);
+	  bool rename(string name, vector<string> newNames);
 
     Relation* select(string relationName, string op1, string comparison, string op2);
     Relation* project(string relationName, vector<string> attributeNames);

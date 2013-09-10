@@ -13,6 +13,8 @@ class Attribute{
     Attribute();
     ~Attribute();
 
+    Attribute(string n);
+
 
     bool isKey;
     string name;

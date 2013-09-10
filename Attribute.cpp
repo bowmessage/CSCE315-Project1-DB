@@ -4,6 +4,10 @@
 Attribute::Attribute(){
 }
 
+Attribute::Attribute(string n){
+  name = n;
+}
+
 Attribute::~Attribute(){
 }
 

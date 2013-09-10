@@ -50,7 +50,7 @@ bool DatabaseManager::insertInto(string name, vector<string> literals){
   } else return false;
 }
 
-bool DatabaseManager::deleteRelation(string name){
+bool DatabaseManager::deleteTable(string name){
   Relation* curRelation = database.getRelationByName(name);
   if(curRelation != NULL){
     database.removeRelation(name);
@@ -65,19 +65,44 @@ void DatabaseManager::show(string name){
 	  return;
    }
    cout << "|			" << name << "			|" << endl;
-   for(int i = 0; i < curRelation->tuples.size(); j++){
-      for(int j = 0; j < curRelation->tuples[i].size(); i++){
-	     cout << "|" << curRelation->tuples[i][j] << " ";
-	  }
+   for(int i = 0; i < curRelation->attributes.size(); i++){
+     cout << "|" << curRelation->attributes[i].name << "\t\t";
+   }
+   cout << "\n======================================\n";
+   for(int i = 0; i < curRelation->tuples.size(); i++){
+      for(int j = 0; j < curRelation->tuples[i].size(); j++){
+	     cout << "|" << curRelation->tuples[i][j] << "\t\t";
+	  }cout << "\n";
    }
    return;
 }
 
-void DatabaseManager::rename(vector<string> newNames, Relation r){
-	for(int i = 0; i < r.attributes.size(); i++){
-		r.attributes[i].name = newNames[i];
-	}
-	return;
+void DatabaseManager::show(Relation* r){
+   if(r == NULL){
+	  cout <<"Relation does not exist" << endl;
+	  return;
+   }
+   cout << "|			" << r->name << "			|" << endl;
+   for(int i = 0; i < r->attributes.size(); i++){
+     cout << "|" << r->attributes[i].name << "\t\t";
+   }
+   cout << "\n======================================\n";
+   for(int i = 0; i < r->tuples.size(); i++){
+      for(int j = 0; j < r->tuples[i].size(); j++){
+	     cout << "|" << r->tuples[i][j] << "\t\t";
+	  }cout << "\n";
+   }
+   return;
+}
+
+bool DatabaseManager::rename(string name, vector<string> newNames){
+  Relation* curRelation = database.getRelationByName(name);
+  if(curRelation != NULL){
+    for(int i = 0; i < curRelation->attributes.size(); i++){
+      curRelation->attributes[i].name = newNames[i];
+    }
+    return true;
+  } else return false;
 }
 
 Relation* DatabaseManager::select(string relationName, string op1, string comparison, string op2){
