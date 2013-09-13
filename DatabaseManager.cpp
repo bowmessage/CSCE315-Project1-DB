@@ -132,11 +132,15 @@ Relation* DatabaseManager::project(string relationName, vector<string> attribute
   vector<Attribute> retAttributes;
   vector< vector<string> > retTuples;
   if(curRelation != NULL){
+    for(int i = 0; i < curRelation->attributes.size(); i++){
+        if(find(attributeNames.begin(), attributeNames.end(), curRelation->attributes[i].name) != attributeNames.end()){
+          retAttributes.push_back(curRelation->attributes[i]);
+        }
+    }
     for(int i = 0; i < curRelation->tuples.size(); i++){
       vector<string> rowToAdd;
       for(int j = 0; j < curRelation->attributes.size(); j++){
         if(find(attributeNames.begin(), attributeNames.end(), curRelation->attributes[j].name) != attributeNames.end()){
-          retAttributes.push_back(curRelation->attributes[j]);
           rowToAdd.push_back(curRelation->tuples[i][j]);
         }
       }

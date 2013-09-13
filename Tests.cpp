@@ -1,8 +1,42 @@
 #include <iostream>
 #include "DatabaseManager.h"
+#include "Lexer.h"
 
 int main(){
-  DatabaseManager myDBM;
+
+  Lexer l;
+
+  l.getString();
+
+
+
+
+
+
+  /*
+  stringstream x("asdfasdfasfd asdf sadf asd as dsss");
+  //l.buffer = x;
+  l.getToken();*/
+
+
+
+
+  /*while(true){
+    stringstream addToBuffer;
+    cout << "Enter a command: ";
+    while(addToBuffer << cin){
+    }
+    l.buffer << addToBuffer.str();
+    cout << "\n\n";
+    l.getToken();
+  }*?
+
+
+
+
+
+
+  /*DatabaseManager myDBM;
 
   const char* attrNames[] = {"Class Name", "Days"};
 
@@ -55,6 +89,6 @@ int main(){
 
 
   cout << "\n\nSelect() classes only on TR...\n\n";
-  myDBM.show(myDBM.select("Classes", "Days of the Week", "==", "TR"));
+  myDBM.show(myDBM.select("Classes", "Days of the Week", "==", "TR"));*/
 
 }

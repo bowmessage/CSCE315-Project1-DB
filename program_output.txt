@@ -1,0 +1,54 @@
+Inserting into classes: (Programming, MWF)
+Inserting into classes: (Kinesiology, MWF)
+Inserting into classes: (Math, TR)
+Inserting into classes: (Science, MWF)
+Inserting into classes: (History, TR)
+
+
+Show() classes...
+
+|			Classes			|
+|Class Name		|Days		
+======================================
+|Programming		|MWF		
+|Kinesiology		|MWF		
+|Math		|TR		
+|Science		|MWF		
+|History		|TR		
+
+
+Renaming() the attributes of Classes...
+
+
+
+Show() classes again...
+
+|			Classes			|
+|Class Title		|Days of the Week		
+======================================
+|Programming		|MWF		
+|Kinesiology		|MWF		
+|Math		|TR		
+|Science		|MWF		
+|History		|TR		
+
+
+Project() classes days only...
+
+|			Classes			|
+|Days of the Week		|Days of the Week		|Days of the Week		|Days of the Week		|Days of the Week		
+======================================
+|MWF		
+|MWF		
+|TR		
+|MWF		
+|TR		
+
+
+Select() classes only on TR...
+
+|			Classes			|
+|Class Title		|Days of the Week		
+======================================
+|Math		|TR		
+|History		|TR		
