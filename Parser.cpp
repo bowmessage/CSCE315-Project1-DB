@@ -186,4 +186,61 @@ bool Parser::identifier(vector<Token>* t){
 
 
 bool Parser::command(vector<Token>* t){
+  return openCmd(t) ||
+    closeCmd(t) ||
+    writeCmd(t) ||
+    exitCmd(t) ||
+    showCmd(t) ||
+    createCmd(t) ||
+    updateCmd(t) ||
+    insertCmd(t) ||
+    deleteCmd(t);
+}
+
+bool Parser::openCmd(vector<Token>* t){
+  return literal(t, "OPEN") &&
+    relationName(t);
+}
+bool Parser::closeCmd(vector<Token>* t){
+  return literal(t, "CLOSE") &&
+    relationName(t);
+}
+bool Parser::writeCmd(vector<Token>* t){
+  return literal(t, "WRITE") &&
+    relationName(t);
+}
+bool Parser::exitCmd(vector<Token>* t){
+  return literal(t, "EXIT");
+}
+bool Parser::showCmd(vector<Token>* t){
+  return literal(t, "SHOW") &&
+    atomicExpr(t);
+}
+bool Parser::createCmd(vector<Token>* t){
+  return literal(t, "CREATE") &&
+    literal(t, "TABLE") &&
+    relationName(t) &&
+    literal(t, "(") &&
+    //typedAttributeList(t) &&
+    literal(t, ")") &&
+    literal(t, "PRIMARY") &&
+    literal(t, "KEY") &&
+    literal(t, "(") &&
+    attributeList(t) &&
+    literal(t, ")");
+}
+bool Parser::updateCmd(vector<Token>* t){
+  /*return literal(t, "UPDATE") &&
+    relationName(t) &&
+    literal(t, "SET") &&
+    attributeName(t) &&
+    literal(t, "=") &&
+    literal(t) &&*/
+return true;
+}
+bool Parser::insertCmd(vector<Token>* t){
+  return true;
+}
+bool Parser::deleteCmd(vector<Token>* t){
+  return true;
 }

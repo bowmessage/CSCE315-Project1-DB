@@ -44,8 +44,15 @@ class Parser{
     bool attributeName(vector<Token>* t);
     bool attributeList(vector<Token>* t);
 
-
-
+    bool openCmd(vector<Token>* t);
+    bool closeCmd(vector<Token>* t);
+    bool writeCmd(vector<Token>* t);
+    bool exitCmd(vector<Token>* t);
+    bool showCmd(vector<Token>* t);
+    bool createCmd(vector<Token>* t);
+    bool updateCmd(vector<Token>* t);
+    bool insertCmd(vector<Token>* t);
+    bool deleteCmd(vector<Token>* t);
 };
 
 #endif
