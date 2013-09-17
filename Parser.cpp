@@ -239,8 +239,21 @@ bool Parser::updateCmd(vector<Token>* t){
 return true;
 }
 bool Parser::insertCmd(vector<Token>* t){
+  /*return (literal(t, "INSERT")
+      && literal(t, "INTO")
+      && relationName(t)
+      && literal(t, "VALUES")
+      && literal(t, "FROM")
+      && literal(t, "(")
+      && literal(t, )
+      ;
+      I have no clue how to check for arbitrary literal*/
   return true;
 }
 bool Parser::deleteCmd(vector<Token>* t){
-  return true;
+  return literal(t, "DELETE")
+    && literal(t, "FROM")
+    && relationName(t)
+    && literal(t, "WHERE")
+    && condition(t);
 }
