@@ -221,7 +221,7 @@ bool Parser::createCmd(vector<Token>* t){
     literal(t, "TABLE") &&
     relationName(t) &&
     literal(t, "(") &&
-    //typedAttributeList(t) &&
+    typedAttributeList(t) &&
     literal(t, ")") &&
     literal(t, "PRIMARY") &&
     literal(t, "KEY") &&
@@ -230,17 +230,65 @@ bool Parser::createCmd(vector<Token>* t){
     literal(t, ")");
 }
 bool Parser::updateCmd(vector<Token>* t){
-  /*return literal(t, "UPDATE") &&
+  return literal(t, "UPDATE") &&
     relationName(t) &&
     literal(t, "SET") &&
     attributeName(t) &&
     literal(t, "=") &&
-    literal(t) &&*/
-return true;
+    literal(t) &&
+    literal(t, "WHERE") &&
+    condition(t);
 }
 bool Parser::insertCmd(vector<Token>* t){
-  return true;
+  return (literal(t, "INSERT") &&
+    literal(t, "INTO") &&
+    relationName(t) &&
+    literal(t, "VALUES") &&
+    literalList(t)) ||
+
+    (literal(t, "INSERT") &&
+    literal(t, "INTO") &&
+    relationName(t) &&
+    literal(t, "VALUES") &&
+    literal(t, "FROM") &&
+    literal(t, "RELATION") &&
+    expression(t));
 }
+
+
+bool Parser::literalList(vector<Token>* t){
+  bool startsRight = literal(t, "(");
+    while(literal(t) && literal(t, ",")){}
+  return startsRight && literal(t) && literal(t,")");
+}
+
 bool Parser::deleteCmd(vector<Token>* t){
-  return true;
+  return literal(t, "DELETE") &&
+    literal(t, "FROM") &&
+    relationName(t) &&
+    literal(t, "WHERE") &&
+    condition(t);
+}
+
+bool Parser::typedAttributeList(vector<Token>* t){
+  bool firstPair = attributeName(t) && type(t);
+  while(literal(t,",") && attributeName(t) && type(t)){}
+  return firstPair;
+}
+
+bool Parser::type(vector<Token>* t){
+  return (literal(t, "VARCHAR") &&
+    literal(t, "(") &&
+    integer(t) &&
+    literal(t, ")")) ||
+    (literal(t, "INTEGER"));
+}
+
+bool Parser::integer(vector<Token>* t){
+  string intVal = t->at(0).value;
+  for(int i = 0; i < intVal.size(); i++){
+    if(!isdigit(intVal.at(i))){
+      return false;
+    }
+  }
 }
