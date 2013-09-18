@@ -14,6 +14,7 @@ class Parser{
     ~Parser();
 
     vector<Token>* extractTokens;
+    string* extract();
 
     void removeFirst(vector<Token>* t);
 
@@ -60,6 +61,7 @@ class Parser{
     bool type(vector<Token>* t);
     bool integer(vector<Token>* t);
     bool literalList(vector<Token>* t);
+
 
 };
 
