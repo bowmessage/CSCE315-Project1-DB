@@ -56,7 +56,6 @@ class Parser{
     bool insertCmd(vector<Token>* t);
     bool deleteCmd(vector<Token>* t);
 
-
     bool typedAttributeList(vector<Token>* t);
     bool type(vector<Token>* t);
     bool integer(vector<Token>* t);

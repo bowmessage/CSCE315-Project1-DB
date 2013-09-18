@@ -246,6 +246,7 @@ bool Parser::updateCmd(vector<Token>* t){
     condition(t);
 }
 bool Parser::insertCmd(vector<Token>* t){
+<<<<<<< HEAD
   return (literal(t, "INSERT") &&
     literal(t, "INTO") &&
     relationName(t) &&
@@ -259,6 +260,18 @@ bool Parser::insertCmd(vector<Token>* t){
     literal(t, "FROM") &&
     literal(t, "RELATION") &&
     expression(t));
+=======
+  /*return (literal(t, "INSERT")
+      && literal(t, "INTO")
+      && relationName(t)
+      && literal(t, "VALUES")
+      && literal(t, "FROM")
+      && literal(t, "(")
+      && literal(t, )
+      ;
+      I have no clue how to check for arbitrary literal*/
+  return true;
+>>>>>>> 1555b5cdcbcffd1a17b484052e87f9c50b2247d7
 }
 
 
@@ -269,6 +282,7 @@ bool Parser::literalList(vector<Token>* t){
 }
 
 bool Parser::deleteCmd(vector<Token>* t){
+<<<<<<< HEAD
   return literal(t, "DELETE") &&
     literal(t, "FROM") &&
     relationName(t) &&
@@ -297,4 +311,8 @@ bool Parser::integer(vector<Token>* t){
       return false;
     }
   }
+}
+
+string* extract(){
+  return extractTokens->front().value;
 }
