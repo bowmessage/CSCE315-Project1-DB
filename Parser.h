@@ -13,6 +13,8 @@ class Parser{
     Parser();
     ~Parser();
 
+    vector<Token>* extractTokens;
+
     void removeFirst(vector<Token>* t);
 
     bool parse(vector<Token>* t); 

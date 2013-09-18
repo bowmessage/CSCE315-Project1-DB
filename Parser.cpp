@@ -4,16 +4,22 @@
 #include <string>
 
 Parser::Parser(){
+  extractTokens = new vector<Token>();
 }
 
-Parser::~Parser(){}
+
+Parser::~Parser(){
+  delete extractTokens;
+}
 
 
 void Parser::removeFirst(vector<Token>* t){
+  extractTokens->push_back(t->at(0));
   t->erase(t->begin());
 }
 
 bool Parser::parse(vector<Token>* t){
+  extractTokens->clear();
   return ( query(t) || command(t) ) && literal(t, ";");
   /*if(query(t)){
   }
