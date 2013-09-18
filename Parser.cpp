@@ -257,3 +257,6 @@ bool Parser::deleteCmd(vector<Token>* t){
     && literal(t, "WHERE")
     && condition(t);
 }
+string* extract(){
+  return extractTokens->front().value;
+}
