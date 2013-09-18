@@ -14,7 +14,7 @@ class Parser{
     ~Parser();
 
     vector<Token>* extractTokens;
-    string* extract();
+    string extract();
 
     void removeFirst(vector<Token>* t);
 

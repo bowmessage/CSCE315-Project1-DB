@@ -175,6 +175,7 @@ bool Parser::relationName(vector<Token>* t){
 
 bool Parser::identifier(vector<Token>* t){
   string val = t->at(0).value;
+  string upperVal = val.toUpperCase();
   for(int i = 0; i < val.size(); i++){
     if(i == 0){
       if(!isalpha(val[i])){
@@ -299,6 +300,6 @@ bool Parser::integer(vector<Token>* t){
   }
 }
 
-string* Parser::extract(){
+string Parser::extract(){
   return extractTokens->front().value;
 }
