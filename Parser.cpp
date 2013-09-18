@@ -176,6 +176,31 @@ bool Parser::relationName(vector<Token>* t){
 bool Parser::identifier(vector<Token>* t){
   string val = t->at(0).value;
   string upperVal = val.toUpperCase();
+  if(
+    upperVal == "WRITE"
+    || upperVal == "DELETE"
+    || upperVal == "CREATE"
+    || upperVal == "INTO"
+    || upperVal == "FROM"
+    || upperVal == "TABLE"
+    || upperVal == "UPDATE"
+    || upperVal == "SHOW"
+    || upperVal == "OPEN"
+    || upperVal == "CLOSE"
+    || upperVal == "EXIT"
+    || upperVal == "SELECT"
+    || upperVal == "PROJECT"
+    || upperVal == "RENAME"
+    || upperVal == "SET"
+    || upperVal == "CROSS"
+    || upperVal == "UNION"
+    || upperVal == "DIFFERENCE"
+    || upperVal == "PRODUCT"
+    || upperVal == "("
+    || upperVal == ")"
+    || upperVal == "\""
+    ) return false;
+  
   for(int i = 0; i < val.size(); i++){
     if(i == 0){
       if(!isalpha(val[i])){
