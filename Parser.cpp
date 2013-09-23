@@ -31,7 +31,11 @@ bool Parser::parse(vector<Token>* t){
 }
 
 bool Parser::query(vector<Token>* t){
-  return relationName(t) && literal(t, "->") && expression(t);
+  string name;
+  bool ret = (name=relationName(t) != "") && literal(t, "->") && expression(t);
+  //Don't know what to do with atomic expressions.
+  
+  return ret
 }
 
 bool Parser::expression(vector<Token>* t){
