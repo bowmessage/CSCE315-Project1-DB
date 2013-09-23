@@ -297,25 +297,33 @@ bool Parser::updateCmd(vector<Token>* t){
 }
 bool Parser::insertCmd(vector<Token>* t){
   int curPosBeforeFirstHalf = curPos;
+  string relation1, relation2;
+  Relation* expr;
+  vector<string>* literals;
   bool firstHalf = literal(t, "INSERT") &&
     literal(t, "INTO") &&
-    relationName(t) &&
+    (relation1 = relationName(t)) != "" &&
     literal(t, "VALUES") &&
-    literalList(t);
+    (literals = literalList(t)) != NULL;
   if(!firstHalf){
     curPos = curPosBeforeFirstHalf;
     bool secondHalf = literal(t, "INSERT") &&
     literal(t, "INTO") &&
-    relationName(t) &&
+    (relation2 = relationName(t)) != "" &&
     literal(t, "VALUES") &&
     literal(t, "FROM") &&
     literal(t, "RELATION") &&
-    expression(t);
+    (expr = expression(t)) != NULL;
+    if(secondHalf){
+      man.getRelationByName(relation2).tuples.pushback(expr -> tuples);
+    }
     return secondHalf;
   }
   else{
-    return true;
+    insertInto(relation1, literals);
+    return firstHalf;
   }
+  return false;
 }
 
 
