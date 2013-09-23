@@ -2,6 +2,7 @@
 #define PARSER_H_
 
 #include "Token.h"
+#include "DatabaseManager.h"
 
 #include <vector>
 
@@ -11,10 +12,16 @@ class Parser{
   public:
 
     Parser();
+    Parser(DatabaseManager* m);
     ~Parser();
 
-    vector<Token>* extractTokens;
-    string extract();
+    DatabaseManager* man;
+
+
+
+
+
+    void toUpper(string& in);
 
     void removeFirst(vector<Token>* t);
 
@@ -25,7 +32,7 @@ class Parser{
 
     bool literal(vector<Token>* t);
     bool literal(vector<Token>* t, string s);
-    bool relationName(vector<Token>* t);
+    string relationName(vector<Token>* t);
     bool identifier(vector<Token>* t);
     bool expression(vector<Token>* t);
 

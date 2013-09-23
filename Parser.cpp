@@ -1,25 +1,26 @@
 #include "Parser.h"
 
 #include <stdexcept>
+#include <algorithm>
 #include <string>
 
 Parser::Parser(){
-  extractTokens = new vector<Token>();
+}
+
+Parser::Parser(DatabaseManager* m){
+  man = m;
 }
 
 
 Parser::~Parser(){
-  delete extractTokens;
 }
 
 
 void Parser::removeFirst(vector<Token>* t){
-  extractTokens->push_back(t->at(0));
   t->erase(t->begin());
 }
 
 bool Parser::parse(vector<Token>* t){
-  extractTokens->clear();
   return ( query(t) || command(t) ) && literal(t, ";");
   /*if(query(t)){
   }
@@ -166,7 +167,7 @@ bool Parser::literal(vector<Token>* t, string s){
   }
 }
 
-bool Parser::relationName(vector<Token>* t){
+string Parser::relationName(vector<Token>* t){
   if(identifier(t)){
     removeFirst(t);
     return true;
@@ -175,7 +176,8 @@ bool Parser::relationName(vector<Token>* t){
 
 bool Parser::identifier(vector<Token>* t){
   string val = t->at(0).value;
-  string upperVal = val.toUpperCase();
+  string upperVal = val;
+  toUpper(upperVal);
   for(int i = 0; i < val.size(); i++){
     if(i == 0){
       if(!isalpha(val[i])){
@@ -189,6 +191,12 @@ bool Parser::identifier(vector<Token>* t){
     }
   }
   return true;
+}
+
+void Parser::toUpper(string& in){
+  for(int i = 0; i < in.length(); i++){
+    in[i] = toupper(in[i]);
+  }
 }
 
 
@@ -224,9 +232,10 @@ bool Parser::showCmd(vector<Token>* t){
     atomicExpr(t);
 }
 bool Parser::createCmd(vector<Token>* t){
-  return literal(t, "CREATE") &&
+  string name;
+  bool ret = literal(t, "CREATE") &&
     literal(t, "TABLE") &&
-    relationName(t) &&
+    (name = relationName(t)) != "" &&
     literal(t, "(") &&
     typedAttributeList(t) &&
     literal(t, ")") &&
@@ -235,6 +244,10 @@ bool Parser::createCmd(vector<Token>* t){
     literal(t, "(") &&
     attributeList(t) &&
     literal(t, ")");
+  if(ret){
+    man.addRelation(Relation(name));
+  }
+  return ret;
 }
 bool Parser::updateCmd(vector<Token>* t){
   return literal(t, "UPDATE") &&
@@ -298,8 +311,4 @@ bool Parser::integer(vector<Token>* t){
       return false;
     }
   }
-}
-
-string Parser::extract(){
-  return extractTokens->front().value;
 }

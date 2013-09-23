@@ -29,14 +29,12 @@ class Token{
       UNION,
       DIFFERENCE,
       PRODUCT,
-
       LEFTPAREN,
       RIGHTPAREN,
       QUOTE,
-
-
       LITERAL
     };
+
 
     Token();
     Token(Type t, string v);
