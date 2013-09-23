@@ -17,10 +17,11 @@ Parser::~Parser(){
 
 
 void Parser::removeFirst(vector<Token>* t){
-  t->erase(t->begin());
+  curPos++;
 }
 
 bool Parser::parse(vector<Token>* t){
+  curPos = 0;
   return ( query(t) || command(t) ) && literal(t, ";");
   /*if(query(t)){
   }
@@ -122,7 +123,7 @@ bool Parser::comparison(vector<Token>* t){
 }
 
 bool Parser::op(vector<Token>* t){
-  string val = t->at(0).value;
+  string val = t->at(curPos).value;
   if(val == "==" ||
       val == "!=" ||
       val == "<" ||
@@ -166,7 +167,7 @@ bool Parser::literal(vector<Token>* t){
 }
 
 bool Parser::literal(vector<Token>* t, string s){
-  if(t->at(0).value == s){
+  if(t->at(curPos).value == s){
     removeFirst(t);
     return true;
   }
@@ -180,7 +181,7 @@ string Parser::relationName(vector<Token>* t){
 }
 
 bool Parser::identifier(vector<Token>* t){
-  string val = t->at(0).value;
+  string val = t->at(curPos).value;
   string upperVal = val;
   toUpper(upperVal);
   if(
@@ -291,18 +292,26 @@ bool Parser::updateCmd(vector<Token>* t){
     condition(t);
 }
 bool Parser::insertCmd(vector<Token>* t){
-  return (literal(t, "INSERT") &&
+  int curPosBeforeFirstHalf = curPos;
+  bool firstHalf = literal(t, "INSERT") &&
     literal(t, "INTO") &&
     relationName(t) &&
     literal(t, "VALUES") &&
-    literalList(t)) ||
-    (literal(t, "INSERT") &&
+    literalList(t);
+  if(!firstHalf){
+    curPos = curPosBeforeFirstHalf;
+    bool secondHalf = literal(t, "INSERT") &&
     literal(t, "INTO") &&
     relationName(t) &&
     literal(t, "VALUES") &&
     literal(t, "FROM") &&
     literal(t, "RELATION") &&
-    expression(t));
+    expression(t);
+    return secondHalf;
+  }
+  else{
+    return true;
+  }
 }
 
 
@@ -349,7 +358,7 @@ bool Parser::type(vector<Token>* t){
 }
 
 bool Parser::integer(vector<Token>* t){
-  string intVal = t->at(0).value;
+  string intVal = t->at(curPos).value;
   for(int i = 0; i < intVal.size(); i++){
     if(!isdigit(intVal.at(i))){
       return false;
