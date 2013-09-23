@@ -14,6 +14,5 @@ Attribute::~Attribute(){
 
 
 bool Attribute::operator==(const Attribute &other){
-  //TODO implement this
-  return false;
+  return name == other.name;
 }

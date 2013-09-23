@@ -270,7 +270,7 @@ bool Parser::createCmd(vector<Token>* t){
     attributeList(t) &&
     literal(t, ")");
   if(ret){
-    man.addRelation(Relation(name));
+    man.createTable(name, );
   }
   return ret;
 }
@@ -308,17 +308,30 @@ bool Parser::literalList(vector<Token>* t){
 }
 
 bool Parser::deleteCmd(vector<Token>* t){
-  return literal(t, "DELETE") &&
+  string relationName, condition;
+  bool ret = literal(t, "DELETE") &&
     literal(t, "FROM") &&
     relationName(t) &&
     literal(t, "WHERE") &&
     condition(t);
 }
 
-bool Parser::typedAttributeList(vector<Token>* t){
-  bool firstPair = attributeName(t) && type(t);
-  while(literal(t,",") && attributeName(t) && type(t)){}
-  return firstPair;
+vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
+  vector<Attribute>* ret = new vector<Attribute>();
+  string curName, curType;
+  bool validList = false;
+  while((curName = attributeName(t)) != "" &&
+      (curType = type(t)) != ""){
+    ret->push_back(Attribute(curName));
+    if(!literal(t, ",")){
+      validList = true;
+      break;
+    }
+  }
+  if(validList){
+    return ret;
+  }
+  else return NULL;
 }
 
 bool Parser::type(vector<Token>* t){
