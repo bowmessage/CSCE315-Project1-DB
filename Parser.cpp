@@ -361,19 +361,30 @@ vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
   else return NULL;
 }
 
-bool Parser::type(vector<Token>* t){
-  return (literal(t, "VARCHAR") &&
+string Parser::type(vector<Token>* t){
+  bool firstHalf = literal(t, "VARCHAR") &&
     literal(t, "(") &&
     integer(t) &&
-    literal(t, ")")) ||
-    (literal(t, "INTEGER"));
+    literal(t, ")");
+  if(!firstHalf){
+    if(literal(t, "INTEGER")){
+      return string("INTEGER");
+    }
+  }
+  else{
+    return string("VARCHAR");
+  }
+  return string("");
 }
 
-bool Parser::integer(vector<Token>* t){
+int* Parser::integer(vector<Token>* t){
+  //Returns null on invalid integer
   string intVal = t->at(curPos).value;
   for(int i = 0; i < intVal.size(); i++){
     if(!isdigit(intVal.at(i))){
-      return false;
+      return NULL;
     }
   }
+  return atoi(intVal);
+
 }

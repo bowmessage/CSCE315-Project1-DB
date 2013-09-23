@@ -66,8 +66,8 @@ class Parser{
     bool deleteCmd(vector<Token>* t);
 
     vector<Attribute>* typedAttributeList(vector<Token>* t);
-    bool type(vector<Token>* t);
-    bool integer(vector<Token>* t);
+    string type(vector<Token>* t);
+    int* integer(vector<Token>* t);
     vector<string>* literalList(vector<Token>* t);
 
 };
