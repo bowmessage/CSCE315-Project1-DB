@@ -143,17 +143,22 @@ bool Parser::attributeName(vector<Token>* t){
   return identifier(t);
 }
 
-bool Parser::attributeList(vector<Token>* t){
-  bool startsWithAttr = attributeName(t);
-  bool keepChecking = true;
-  bool nextIsComma = false;
-  bool nextIsAttrName = false;
-  while(keepChecking){
-    nextIsComma = literal(t, ",");
-    nextIsAttrName = attributeName(t);
-    keepChecking = nextIsComma && nextIsAttrName;
+vector<Attribute>* Parser::attributeList(vector<Token>* t){
+  //Returns NULL on invalid attribute-list.
+  vector<Attribute>* ret = new vector<Attribute>();
+  string curName;
+  bool validList = false;
+  while((curName = attributeName(t)) != ""){
+    ret->push_back(Attribute(curName));
+    if(!literal(t, ",")){
+      validList = true;
+      break;
+    }
   }
-  return startsWithAttr && nextIsComma == false && nextIsAttrName == false;
+  if(validList){
+    return ret;
+  }
+  else return NULL;
 }
 
 bool Parser::literal(vector<Token>* t){
@@ -258,19 +263,20 @@ bool Parser::showCmd(vector<Token>* t){
 }
 bool Parser::createCmd(vector<Token>* t){
   string name;
+  vector<Attribute>* typedAttrs, keyAttrs;
   bool ret = literal(t, "CREATE") &&
     literal(t, "TABLE") &&
     (name = relationName(t)) != "" &&
     literal(t, "(") &&
-    typedAttributeList(t) &&
+    (typedAttrs = typedAttributeList(t)) != NULL &&
     literal(t, ")") &&
     literal(t, "PRIMARY") &&
     literal(t, "KEY") &&
     literal(t, "(") &&
-    attributeList(t) &&
+    (keyAttrs = attributeList(t)) != NULL &&
     literal(t, ")");
   if(ret){
-    man.createTable(name, );
+    man.createTable(name, &typedAttrs, &keyAttrs);
   }
   return ret;
 }
@@ -290,7 +296,6 @@ bool Parser::insertCmd(vector<Token>* t){
     relationName(t) &&
     literal(t, "VALUES") &&
     literalList(t)) ||
-
     (literal(t, "INSERT") &&
     literal(t, "INTO") &&
     relationName(t) &&
@@ -317,6 +322,7 @@ bool Parser::deleteCmd(vector<Token>* t){
 }
 
 vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
+  //Returns NULL on invalid typed-attribute-list.
   vector<Attribute>* ret = new vector<Attribute>();
   string curName, curType;
   bool validList = false;

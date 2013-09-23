@@ -35,9 +35,13 @@ bool DatabaseManager::closeRelation(string r){
   }
 }*/
 
-bool DatabaseManager::createTable(string name, vector<Attribute> attributes, vector<Attribute*> keys){
+bool DatabaseManager::createTable(string name, vector<Attribute> attributes, vector<Attribute> keys){
   if(database.getRelationByName(name) == NULL){
-    database.addRelation(Relation(name, attributes, keys));
+    vector<Attribute*> keyPointers;
+    for(int i = 0; i < keys.size(); i++){
+      keyPointers.push_back(*keys[i]);
+    }
+    database.addRelation(Relation(name, attributes, keyPointers));
     return true;
   } else return false;
 }

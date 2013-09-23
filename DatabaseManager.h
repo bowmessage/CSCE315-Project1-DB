@@ -16,7 +16,7 @@ class DatabaseManager{
 
 
 
-    bool createTable(string name, vector<Attribute> attributes, vector<Attribute*> keys);
+    bool createTable(string name, vector<Attribute> attributes, vector<Attribute> keys);
     bool insertInto(string name, vector<string> literals);
     bool deleteTable(string name);
     void show(string name);
