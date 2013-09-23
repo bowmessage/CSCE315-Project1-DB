@@ -39,64 +39,120 @@ bool Parser::query(vector<Token>* t){
   return ret
 }
 
-bool Parser::expression(vector<Token>* t){
-  return atomicExpr(t) ||
-    selectionExpr(t) ||
-    projectionExpr(t) ||
-    renamingExpr(t) ||
-    unionExpr(t) ||
-    differenceExpr(t) ||
-    productExpr(t);
+Relation* Parser::expression(vector<Token>* t){
+  Relation* ret = NULL;
+  bool validExpression = (ret = atomicExpr(t)) != NULL ||
+    (ret = selectionExpr(t)) != NULL ||
+    (ret = projectionExpr(t)) != NULL ||
+    (ret = renamingExpr(t)) != NULL ||
+    (ret = unionExpr(t)) != NULL ||
+    (ret = differenceExpr(t)) != NULL ||
+    (ret = productExpr(t)) != NULL;
+  return ret;
 }
 
-bool Parser::atomicExpr(vector<Token>* t){
-  return relationName(t) || ( literal(t, "(") && expression(t) && literal(t, ")"));
+Relation* Parser::atomicExpr(vector<Token>* t){
+  string relationName;
+  bool isARelationName = (relationName = relationName(t)) != "";
+  if(isARelationName){
+    return man.getRelationByName(relationName);
+  }
+  else{
+    Relation* ret = NULL;
+    bool isAnotherExpression = literal(t, "(") && 
+      (ret = expression(t)) != NULL && 
+      literal(t, ")");
+    return ret;
+  }
+  return NULL;
 }
 
-bool Parser::selectionExpr(vector<Token>* t){
-  return literal(t, "select") &&
+Relation* Parser::selectionExpr(vector<Token>* t){
+  string cond;
+  Relation* r = NULL;
+  bool valid = literal(t, "select") &&
     literal(t, "(") &&
-    condition(t) &&
+    (cond = condition(t)) != "" &&
     literal(t, ")") &&
-    atomicExpr(t);
+    (r = atomicExpr(t)) != NULL;
+  if(valid){
+    //TODO: this cond cond cond is wrong.
+    return man.select(r->name, cond, cond, cond);
+  }
+  else return NULL;
 }
 
 
-bool Parser::projectionExpr(vector<Token>* t){
-  return literal(t, "project") &&
+Relation* Parser::projectionExpr(vector<Token>* t){
+  vector<Attribute>* attrList = NULL;
+  Relation* r = NULL;
+  bool valid = literal(t, "project") &&
     literal(t, "(") &&
-    attributeList(t) &&
+    (attrList = attributeList(t)) != NULL &&
     literal(t, ")") &&
-    atomicExpr(t);
+    (r = atomicExpr(t)) != NULL;
+  if(valid){
+    vector<string> namesOfAttrs;
+    for(int i = 0; i < attrList->size(); i++){
+      namesOfAttrs.push_back(attrList->at(i).name);
+    }
+    return man.select(r->name, namesOfAttrs);
+  }
+  else return NULL;
 }
 
-bool Parser::renamingExpr(vector<Token>* t){
-  return literal(t, "rename") &&
+Relation* Parser::renamingExpr(vector<Token>* t){
+  vector<Attribute>* attrList = NULL;
+  Relation* r = NULL;
+  bool valid = literal(t, "rename") &&
     literal(t, "(") &&
-    attributeList(t) &&
+    (attrList = attributeList(t)) != NULL &&
     literal(t, ")") &&
-    atomicExpr(t);
+    (r = atomicExpr(t)) != NULL;
+  if(valid){
+    vector<string> namesOfAttrs;
+    for(int i = 0; i < attrList->size(); i++){
+      namesOfAttrs.push_back(attrList->at(i).name);
+    }
+    return man.rename(r->name, namesOfAttrs);
+  }
+  else return NULL;
 }
 
-bool Parser::unionExpr(vector<Token>* t){
-  return atomicExpr(t) &&
+Relation* Parser::unionExpr(vector<Token>* t){
+  Relation* r1 = NULL;
+  Relation* r2 = NULL;
+  bool isValid = (r1 = atomicExpr(t)) != NULL &&
     literal(t, "+") &&
-    atomicExpr(t);
+    (r2 = atomicExpr(t)) != NULL;
+  if(valid){
+    return * man.database.setUnion(&r1, &r2);
+  } else return NULL;
 }
 
-bool Parser::differenceExpr(vector<Token>* t){
-  return atomicExpr(t) &&
+Relation* Parser::differenceExpr(vector<Token>* t){
+  Relation* r1 = NULL;
+  Relation* r2 = NULL;
+  bool isValid = (r1 = atomicExpr(t)) != NULL &&
     literal(t, "-") &&
-    atomicExpr(t);
+    (r2 = atomicExpr(t)) != NULL;
+  if(valid){
+    return * man.database.setDifference(&r1, &r2);
+  } else return NULL;
 }
 
-bool Parser::productExpr(vector<Token>* t){
-  return atomicExpr(t) &&
+Relation* Parser::productExpr(vector<Token>* t){
+  Relation* r1 = NULL;
+  Relation* r2 = NULL;
+  bool isValid = (r1 = atomicExpr(t)) != NULL &&
     literal(t, "*") &&
-    atomicExpr(t);
+    (r2 = atomicExpr(t)) != NULL;
+  if(valid){
+    return * man.database.setProduct(&r1, &r2);
+  } else return NULL;
 }
 
-bool Parser::condition(vector<Token>* t){
+string Parser::condition(vector<Token>* t){
   if(conjunction(t)){
     if(literal(t, "||")){
       return conjunction(t);
