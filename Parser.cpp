@@ -166,8 +166,8 @@ vector<Attribute>* Parser::attributeList(vector<Token>* t){
   else return NULL;
 }
 
-bool Parser::literal(vector<Token>* t){
-  return true;
+string Parser::literal(vector<Token>* t){
+  return t->at(curPos).value;
 }
 
 bool Parser::literal(vector<Token>* t, string s){
@@ -319,10 +319,18 @@ bool Parser::insertCmd(vector<Token>* t){
 }
 
 
-bool Parser::literalList(vector<Token>* t){
+vector<string>* Parser::literalList(vector<Token>* t){
+  //Returns NULL on invalid literal-list.
+  vector<string>* ret = new vector<string>();
   bool startsRight = literal(t, "(");
-    while(literal(t) && literal(t, ",")){}
-  return startsRight && literal(t) && literal(t,")");
+  bool validList = false;
+    while(literal(t)){
+      if(!literal(t, ",")) {
+        validList = true;
+        break;
+      }
+    }
+  return startsRight && validList && literal(t,")");
 }
 
 bool Parser::deleteCmd(vector<Token>* t){

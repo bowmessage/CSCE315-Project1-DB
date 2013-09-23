@@ -31,7 +31,7 @@ class Parser{
     bool query(vector<Token>* t);
     bool command(vector<Token>* t);
 
-    bool literal(vector<Token>* t);
+    string literal(vector<Token>* t);
     bool literal(vector<Token>* t, string s);
     string relationName(vector<Token>* t);
     bool identifier(vector<Token>* t);
@@ -68,8 +68,7 @@ class Parser{
     vector<Attribute>* typedAttributeList(vector<Token>* t);
     bool type(vector<Token>* t);
     bool integer(vector<Token>* t);
-    bool literalList(vector<Token>* t);
-
+    vector<string>* literalList(vector<Token>* t);
 
 };
 
