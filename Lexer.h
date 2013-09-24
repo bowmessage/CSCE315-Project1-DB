@@ -19,6 +19,7 @@ class Lexer{
     Lexer();
     ~Lexer();
 
+    void readFile();
 
     void getString();
 
