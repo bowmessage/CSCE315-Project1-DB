@@ -19,7 +19,7 @@ class Lexer{
     Lexer();
     ~Lexer();
 
-    void readFile();
+    void readFile(string filename);
 
     void getString();
 
