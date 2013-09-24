@@ -5,6 +5,21 @@ Lexer::Lexer(){
 
 Lexer::~Lexer(){}
 
+void Lexer::readFile(string filename){
+  ifstream file;
+  file.open(filename);
+  string line;
+  if (file.is_open())
+  {
+    while ( getline (file,line) )
+    {
+      tokenize(line);
+    }
+    file.close();
+  }
+  else cout << "Unable to open file"; 
+}
+
 void Lexer::getString(){
   string line;
   cout<<"Please enter your command and press ENTER.\n";
