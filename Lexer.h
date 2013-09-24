@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include "Token.h"
+#include <fstream>
 
 using namespace std;
 
