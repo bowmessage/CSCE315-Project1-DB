@@ -54,7 +54,7 @@ Relation* Parser::atomicExpr(vector<Token>* t){
   string relationName;
   bool isARelationName = (relationName = relationName(t)) != "";
   if(isARelationName){
-    return man.getRelationByName(relationName);
+    return man->getRelationByName(relationName);
   }
   else{
     Relation* ret = NULL;
@@ -76,7 +76,7 @@ Relation* Parser::selectionExpr(vector<Token>* t){
     (r = atomicExpr(t)) != NULL;
   if(valid){
     //TODO: this cond cond cond is wrong.
-    return man.select(r->name, cond, cond, cond);
+    return man->select(r->name, cond, cond, cond);
   }
   else return NULL;
 }
@@ -95,7 +95,7 @@ Relation* Parser::projectionExpr(vector<Token>* t){
     for(int i = 0; i < attrList->size(); i++){
       namesOfAttrs.push_back(attrList->at(i).name);
     }
-    return man.select(r->name, namesOfAttrs);
+    return man->select(r->name, namesOfAttrs);
   }
   else return NULL;
 }
@@ -113,7 +113,7 @@ Relation* Parser::renamingExpr(vector<Token>* t){
     for(int i = 0; i < attrList->size(); i++){
       namesOfAttrs.push_back(attrList->at(i).name);
     }
-    return man.rename(r->name, namesOfAttrs);
+    return man->rename(r->name, namesOfAttrs);
   }
   else return NULL;
 }
@@ -125,7 +125,7 @@ Relation* Parser::unionExpr(vector<Token>* t){
     literal(t, "+") &&
     (r2 = atomicExpr(t)) != NULL;
   if(valid){
-    return * man.database.setUnion(&r1, &r2);
+    return * man->database.setUnion(&r1, &r2);
   } else return NULL;
 }
 
@@ -136,7 +136,7 @@ Relation* Parser::differenceExpr(vector<Token>* t){
     literal(t, "-") &&
     (r2 = atomicExpr(t)) != NULL;
   if(valid){
-    return * man.database.setDifference(&r1, &r2);
+    return * man->database.setDifference(&r1, &r2);
   } else return NULL;
 }
 
@@ -147,7 +147,7 @@ Relation* Parser::productExpr(vector<Token>* t){
     literal(t, "*") &&
     (r2 = atomicExpr(t)) != NULL;
   if(valid){
-    return * man.database.setProduct(&r1, &r2);
+    return * man->database.setProduct(&r1, &r2);
   } else return NULL;
 }
 
@@ -234,9 +234,11 @@ bool Parser::literal(vector<Token>* t, string s){
 
 string Parser::relationName(vector<Token>* t){
   if(identifier(t)){
+    string ret = t->at(curPos).value;
     removeFirst(t);
-    return true;
+    return ret;
   }
+  return "";
 }
 
 bool Parser::identifier(vector<Token>* t){
@@ -303,16 +305,19 @@ bool Parser::command(vector<Token>* t){
 }
 
 bool Parser::openCmd(vector<Token>* t){
+  string name;
   return literal(t, "OPEN") &&
-    relationName(t);
+    (name = relationName(t)) != "";
 }
 bool Parser::closeCmd(vector<Token>* t){
+  string name;
   return literal(t, "CLOSE") &&
-    relationName(t);
+    (name = relationName(t)) != "";
 }
 bool Parser::writeCmd(vector<Token>* t){
+  string name;
   return literal(t, "WRITE") &&
-    relationName(t);
+    (name = relationName(t)) != "";
 }
 bool Parser::exitCmd(vector<Token>* t){
   return literal(t, "EXIT");
@@ -323,7 +328,8 @@ bool Parser::showCmd(vector<Token>* t){
 }
 bool Parser::createCmd(vector<Token>* t){
   string name;
-  vector<Attribute>* typedAttrs, keyAttrs;
+  vector<Attribute>* typedAttrs;
+  vector<Attribute>* keyAttrs;
   bool ret = literal(t, "CREATE") &&
     literal(t, "TABLE") &&
     (name = relationName(t)) != "" &&
@@ -336,13 +342,14 @@ bool Parser::createCmd(vector<Token>* t){
     (keyAttrs = attributeList(t)) != NULL &&
     literal(t, ")");
   if(ret){
-    man.createTable(name, &typedAttrs, &keyAttrs);
+    man->createTable(name, &typedAttrs, &keyAttrs);
   }
   return ret;
 }
 bool Parser::updateCmd(vector<Token>* t){
+  string relationName;
   return literal(t, "UPDATE") &&
-    relationName(t) &&
+    (relationName = relationName(t)) != "" &&
     literal(t, "SET") &&
     attributeName(t) &&
     literal(t, "=") &&
@@ -370,12 +377,12 @@ bool Parser::insertCmd(vector<Token>* t){
     literal(t, "RELATION") &&
     (expr = expression(t)) != NULL;
     if(secondHalf){
-      man.getRelationByName(relation2).tuples.pushback(expr -> tuples);
+      man->database.getRelationByName(relation2)->tuples.pushback(expr -> tuples);
     }
     return secondHalf;
   }
   else{
-    insertInto(relation1, literals);
+    man->insertInto(relation1, literals);
     return firstHalf;
   }
   return false;
@@ -393,17 +400,22 @@ vector<string>* Parser::literalList(vector<Token>* t){
         break;
       }
     }
-  return startsRight && validList && literal(t,")");
+  if(startsRight && validList && literal(t,")")){
+    return ret;
+  }
+  else return NULL;
 }
 
 bool Parser::deleteCmd(vector<Token>* t){
   //TODO fix this
-  string relationName, condition;
+  string relationName;
+  string condition;
   bool ret = literal(t, "DELETE") &&
     literal(t, "FROM") &&
     (relationName = relationName(t)) != "" &&
     literal(t, "WHERE") &&
     (condition = condition(t)) != "";
+  return ret;
 }
 
 vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
@@ -449,7 +461,7 @@ int* Parser::integer(vector<Token>* t){
       return NULL;
     }
   }
-  int* intVal;
-  std::istringstream(intStr) >> intVal;
-  return &intVal;
+  int* ret = new int;
+  ret = &atoi(intStr.c_str());
+  return ret;
 }
