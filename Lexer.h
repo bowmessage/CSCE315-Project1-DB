@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include "Token.h"
+#include <fstream>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class Lexer{
     Lexer();
     ~Lexer();
 
+    void readFile(string filename);
 
     void getString();
 
