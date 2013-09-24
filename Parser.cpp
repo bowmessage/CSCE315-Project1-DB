@@ -33,10 +33,9 @@ bool Parser::parse(vector<Token>* t){
 
 bool Parser::query(vector<Token>* t){
   string name;
-  bool ret = (name=relationName(t) != "") && literal(t, "->") && expression(t);
-  //Don't know what to do with atomic expressions.
-  
-  return ret
+  Relation* r = NULL;
+  bool ret = (name=relationName(t) != "") && literal(t, "->") && (r = expression(t)) != NULL;
+  return ret;
 }
 
 Relation* Parser::expression(vector<Token>* t){
@@ -388,7 +387,7 @@ vector<string>* Parser::literalList(vector<Token>* t){
   vector<string>* ret = new vector<string>();
   bool startsRight = literal(t, "(");
   bool validList = false;
-    while(literal(t)){
+    while(literal(t) != ""){
       if(!literal(t, ",")) {
         validList = true;
         break;
@@ -398,12 +397,13 @@ vector<string>* Parser::literalList(vector<Token>* t){
 }
 
 bool Parser::deleteCmd(vector<Token>* t){
+  //TODO fix this
   string relationName, condition;
   bool ret = literal(t, "DELETE") &&
     literal(t, "FROM") &&
-    relationName(t) &&
+    (relationName = relationName(t)) != "" &&
     literal(t, "WHERE") &&
-    condition(t);
+    (condition = condition(t)) != "";
 }
 
 vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
@@ -443,12 +443,13 @@ string Parser::type(vector<Token>* t){
 
 int* Parser::integer(vector<Token>* t){
   //Returns null on invalid integer
-  string intVal = t->at(curPos).value;
-  for(int i = 0; i < intVal.size(); i++){
-    if(!isdigit(intVal.at(i))){
+  string intStr = t->at(curPos).value;
+  for(int i = 0; i < intStr.size(); i++){
+    if(!isdigit(intStr.at(i) || i == 0 && !isdigit(intStr.at(i)) && intStr.at(i) != '-')){
       return NULL;
     }
   }
-  return atoi(intVal);
-
+  int* intVal;
+  std::istringstream(intStr) >> intVal;
+  return &intVal;
 }

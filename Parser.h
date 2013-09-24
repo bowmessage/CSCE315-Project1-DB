@@ -16,7 +16,7 @@ class Parser{
     ~Parser();
 
     DatabaseManager* man;
-    int curPos = 0;
+    int curPos;
 
 
 
