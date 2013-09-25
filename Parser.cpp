@@ -2,7 +2,11 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <sstream>
 #include <string>
+#include <iostream>
+
+#define DEBUG 1
 
 Parser::Parser(){
 }
@@ -16,25 +20,19 @@ Parser::~Parser(){
 }
 
 
-void Parser::removeFirst(vector<Token>* t){
+void Parser::removeFirst(){
   curPos++;
 }
 
 bool Parser::parse(vector<Token>* t){
   curPos = 0;
   return ( query(t) || command(t) ) && literal(t, ";");
-  /*if(query(t)){
-  }
-  else if (command(t)){
-  }
-  else{
-  }*/
 }
 
 bool Parser::query(vector<Token>* t){
   string name;
   Relation* r = NULL;
-  bool ret = (name=relationName(t) != "") && literal(t, "->") && (r = expression(t)) != NULL;
+  bool ret = ((name=relationName(t)) != "") && literal(t, "->") && ((r = expression(t)) != NULL);
   return ret;
 }
 
@@ -51,10 +49,11 @@ Relation* Parser::expression(vector<Token>* t){
 }
 
 Relation* Parser::atomicExpr(vector<Token>* t){
-  string relationName;
-  bool isARelationName = (relationName = relationName(t)) != "";
+  int curPosNow = curPos;
+  string name;
+  bool isARelationName = (name = relationName(t)) != "";
   if(isARelationName){
-    return man->getRelationByName(relationName);
+    return man->database.getRelationByName(name);
   }
   else{
     Relation* ret = NULL;
@@ -63,10 +62,12 @@ Relation* Parser::atomicExpr(vector<Token>* t){
       literal(t, ")");
     return ret;
   }
+  curPos = curPosNow;
   return NULL;
 }
 
 Relation* Parser::selectionExpr(vector<Token>* t){
+  int curPosNow = curPos;
   string cond;
   Relation* r = NULL;
   bool valid = literal(t, "select") &&
@@ -78,11 +79,15 @@ Relation* Parser::selectionExpr(vector<Token>* t){
     //TODO: this cond cond cond is wrong.
     return man->select(r->name, cond, cond, cond);
   }
-  else return NULL;
+  else{
+    curPos = curPosNow;
+    return NULL;
+  }
 }
 
 
 Relation* Parser::projectionExpr(vector<Token>* t){
+  int curPosNow = curPos;
   vector<Attribute>* attrList = NULL;
   Relation* r = NULL;
   bool valid = literal(t, "project") &&
@@ -95,12 +100,16 @@ Relation* Parser::projectionExpr(vector<Token>* t){
     for(int i = 0; i < attrList->size(); i++){
       namesOfAttrs.push_back(attrList->at(i).name);
     }
-    return man->select(r->name, namesOfAttrs);
+    return man->project(r->name, namesOfAttrs);
   }
-  else return NULL;
+  else{
+    curPos = curPosNow;
+    return NULL;
+  }
 }
 
 Relation* Parser::renamingExpr(vector<Token>* t){
+  int curPosNow = curPos;
   vector<Attribute>* attrList = NULL;
   Relation* r = NULL;
   bool valid = literal(t, "rename") &&
@@ -113,9 +122,19 @@ Relation* Parser::renamingExpr(vector<Token>* t){
     for(int i = 0; i < attrList->size(); i++){
       namesOfAttrs.push_back(attrList->at(i).name);
     }
-    return man->rename(r->name, namesOfAttrs);
+    bool success = man->rename(r->name, namesOfAttrs);
+    if(success){
+      return man->database.getRelationByName(r->name);
+    }
+    else{
+      curPos = curPosNow;
+      return NULL;
+    }
   }
-  else return NULL;
+  else{
+    curPos = curPosNow;
+    return NULL;
+  }
 }
 
 Relation* Parser::unionExpr(vector<Token>* t){
@@ -124,8 +143,8 @@ Relation* Parser::unionExpr(vector<Token>* t){
   bool isValid = (r1 = atomicExpr(t)) != NULL &&
     literal(t, "+") &&
     (r2 = atomicExpr(t)) != NULL;
-  if(valid){
-    return * man->database.setUnion(&r1, &r2);
+  if(isValid){
+    return &man->database.setUnion(*r1, *r2);
   } else return NULL;
 }
 
@@ -135,8 +154,8 @@ Relation* Parser::differenceExpr(vector<Token>* t){
   bool isValid = (r1 = atomicExpr(t)) != NULL &&
     literal(t, "-") &&
     (r2 = atomicExpr(t)) != NULL;
-  if(valid){
-    return * man->database.setDifference(&r1, &r2);
+  if(isValid){
+    return &man->database.setDifference(*r1, *r2);
   } else return NULL;
 }
 
@@ -146,57 +165,80 @@ Relation* Parser::productExpr(vector<Token>* t){
   bool isValid = (r1 = atomicExpr(t)) != NULL &&
     literal(t, "*") &&
     (r2 = atomicExpr(t)) != NULL;
-  if(valid){
-    return * man->database.setProduct(&r1, &r2);
+  if(isValid){
+    return &man->database.setProduct(*r1, *r2);
   } else return NULL;
 }
 
 string Parser::condition(vector<Token>* t){
-  if(conjunction(t)){
-    if(literal(t, "||")){
-      return conjunction(t);
+  string comp1, comp2;
+  if((comp1 = comparison(t)) != ""){
+    int curPosNow = curPos;
+    if(literal(t, "||") && (comp2 = comparison(t)) != ""){
+      stringstream ss;
+      ss << comp1 << " && " << comp2;
+      return ss.str();
     }
-    return true;
-  }
-  else{
-    return false;
-  }
-}
-
-bool Parser::conjunction(vector<Token>* t){
-  if(comparison(t)){
-    if(literal(t, "&&")){
-      return comparison(t);
+    else{
+      curPos = curPosNow;
+      return comp1;
     }
-    return true;
   }
-  else{
-    return false;
-  }
+  else return "";
 }
 
-bool Parser::comparison(vector<Token>* t){
-  return operand(t) &&
-    op(t) &&
-    operand(t);
+string Parser::conjunction(vector<Token>* t){
+  string comp1, comp2;
+  if((comp1 = comparison(t)) != ""){
+    int curPosNow = curPos;
+    if(literal(t, "&&") && (comp2 = comparison(t)) != ""){
+      stringstream ss;
+      ss << comp1 << " && " << comp2;
+      return ss.str();
+    }
+    else{
+      curPos = curPosNow;
+      return comp1;
+    }
+  }
+  else return "";
 }
 
-bool Parser::op(vector<Token>* t){
-  string val = t->at(curPos).value;
+string Parser::comparison(vector<Token>* t){
+  string op1, op2, oper;
+  bool isValid = (op1 = operand(t)) != "" &&
+    (oper = op(t)) != "" &&
+    (op2 = operand(t)) != "";
+  if(isValid){
+    stringstream ss;
+    ss << op1 << " " << oper << " " << op2;
+    return ss.str();
+  }
+  else return "";
+}
+
+string Parser::op(vector<Token>* t){
+  string val = tokenAtCurPos(t).value;
   if(val == "==" ||
       val == "!=" ||
       val == "<" ||
       val == ">" ||
       val == "<=" ||
       val == ">="){
-    removeFirst(t);
-    return true;
+    removeFirst();
+    return val;
   }
-  else return false;
+  else return "";
 }
 
-bool Parser::operand(vector<Token>* t){
-  return attributeName(t) || literal(t);
+string Parser::operand(vector<Token>* t){
+  string name;
+  bool isValid = (name = attributeName(t)) != "" ||
+    (name = literal(t)) != "";
+  if(isValid){
+    return name;
+  }
+  else return "";
 }
 
 bool Parser::attributeName(vector<Token>* t){
@@ -222,27 +264,45 @@ vector<Attribute>* Parser::attributeList(vector<Token>* t){
 }
 
 string Parser::literal(vector<Token>* t){
-  return t->at(curPos).value;
+  string ret = tokenAtCurPos(t).value;
+  removeFirst();
+  return ret;
 }
 
 bool Parser::literal(vector<Token>* t, string s){
-  if(t->at(curPos).value == s){
-    removeFirst(t);
+  if(tokenAtCurPos(t).value == s){
+    removeFirst();
     return true;
   }
+  else return false;
 }
 
 string Parser::relationName(vector<Token>* t){
+  if(DEBUG){
+    cout << "Relation Name Test... curPos: " << curPos << ".\n";
+  }
   if(identifier(t)){
-    string ret = t->at(curPos).value;
-    removeFirst(t);
+    string ret = tokenAtCurPos(t).value;
+    removeFirst();
     return ret;
   }
   return "";
 }
 
+Token Parser::tokenAtCurPos(vector<Token>* t){
+  int lim = t->size();
+  if(curPos >= lim){
+    return Token();
+  }
+  else return t->at(curPos);
+}
+
 bool Parser::identifier(vector<Token>* t){
-  string val = t->at(curPos).value;
+  if(DEBUG){
+    std::cout << "Identifier test... curPos: " << curPos << ".\n";
+    std::cout << "Value is: " << tokenAtCurPos(t).value << ".\n";
+  }
+  string val = tokenAtCurPos(t).value;
   string upperVal = val;
   toUpper(upperVal);
   if(
@@ -305,32 +365,72 @@ bool Parser::command(vector<Token>* t){
 }
 
 bool Parser::openCmd(vector<Token>* t){
+  int curPosNow = curPos;
   string name;
-  return literal(t, "OPEN") &&
+  bool isValid =  literal(t, "OPEN") &&
     (name = relationName(t)) != "";
+  if(isValid){
+    return true;
+  }
+  else {
+    curPos = curPosNow;
+    return false;
+  }
 }
 bool Parser::closeCmd(vector<Token>* t){
+  int curPosNow = curPos;
   string name;
-  return literal(t, "CLOSE") &&
+  bool isValid = literal(t, "CLOSE") &&
     (name = relationName(t)) != "";
+  if(isValid){
+    return true;
+  }
+  else{
+    curPos = curPosNow;
+    return false;
+  }
 }
 bool Parser::writeCmd(vector<Token>* t){
+  int curPosNow = curPos;
   string name;
-  return literal(t, "WRITE") &&
+  bool isValid = literal(t, "WRITE") &&
     (name = relationName(t)) != "";
+  if(isValid){
+    return true;
+  }
+  else{
+    curPos = curPosNow;
+  }
 }
 bool Parser::exitCmd(vector<Token>* t){
-  return literal(t, "EXIT");
+  int curPosNow = curPos;
+  bool isValid = literal(t, "EXIT");
+  if(isValid){
+    return true;
+  }
+  else{
+    curPos = curPosNow;
+    return false;
+  }
 }
 bool Parser::showCmd(vector<Token>* t){
-  return literal(t, "SHOW") &&
+  int curPosNow = curPos;
+  bool isValid = literal(t, "SHOW") &&
     atomicExpr(t);
+  if(isValid){
+    return true;
+  }
+  else{
+    curPos = curPosNow;
+    return false;
+  }
 }
 bool Parser::createCmd(vector<Token>* t){
+  int curPosNow = curPos;
   string name;
   vector<Attribute>* typedAttrs;
   vector<Attribute>* keyAttrs;
-  bool ret = literal(t, "CREATE") &&
+  bool isValid = literal(t, "CREATE") &&
     literal(t, "TABLE") &&
     (name = relationName(t)) != "" &&
     literal(t, "(") &&
@@ -341,21 +441,33 @@ bool Parser::createCmd(vector<Token>* t){
     literal(t, "(") &&
     (keyAttrs = attributeList(t)) != NULL &&
     literal(t, ")");
-  if(ret){
-    man->createTable(name, &typedAttrs, &keyAttrs);
+  if(isValid){
+    man->createTable(name, *typedAttrs, *keyAttrs);
+    return true;
   }
-  return ret;
+  else{
+    curPos = curPosNow;
+    return false;
+  }
 }
 bool Parser::updateCmd(vector<Token>* t){
-  string relationName;
-  return literal(t, "UPDATE") &&
-    (relationName = relationName(t)) != "" &&
+  int curPosNow = curPos;
+  string name;
+  bool isValid =  literal(t, "UPDATE") &&
+    (name = relationName(t)) != "" &&
     literal(t, "SET") &&
     attributeName(t) &&
     literal(t, "=") &&
-    literal(t) &&
+    (literal(t) != "") &&
     literal(t, "WHERE") &&
-    condition(t);
+    (condition(t) != "");
+  if(isValid){
+    return true;
+  }
+  else{
+    curPos = curPosNow;
+    return false;
+  }
 }
 bool Parser::insertCmd(vector<Token>* t){
   int curPosBeforeFirstHalf = curPos;
@@ -377,14 +489,19 @@ bool Parser::insertCmd(vector<Token>* t){
     literal(t, "RELATION") &&
     (expr = expression(t)) != NULL;
     if(secondHalf){
-      man->database.getRelationByName(relation2)->tuples.pushback(expr -> tuples);
+      vector< vector<string> > add = expr->tuples;
+      Relation* addTo = man->database.getRelationByName(relation2);
+      for(int i = 0; i < add.size(); i++){
+        addTo->tuples.push_back(add[i]);
+      }
     }
-    return secondHalf;
   }
   else{
-    man->insertInto(relation1, literals);
+    man->insertInto(relation1, *literals);
     return firstHalf;
   }
+  //Getting to this line means not first half nor second.
+  curPos = curPosBeforeFirstHalf;
   return false;
 }
 
@@ -408,13 +525,13 @@ vector<string>* Parser::literalList(vector<Token>* t){
 
 bool Parser::deleteCmd(vector<Token>* t){
   //TODO fix this
-  string relationName;
-  string condition;
+  string name;
+  string cond;
   bool ret = literal(t, "DELETE") &&
     literal(t, "FROM") &&
-    (relationName = relationName(t)) != "" &&
+    (name = relationName(t)) != "" &&
     literal(t, "WHERE") &&
-    (condition = condition(t)) != "";
+    (cond = condition(t)) != "";
   return ret;
 }
 
@@ -455,13 +572,12 @@ string Parser::type(vector<Token>* t){
 
 int* Parser::integer(vector<Token>* t){
   //Returns null on invalid integer
-  string intStr = t->at(curPos).value;
+  string intStr = tokenAtCurPos(t).value;
   for(int i = 0; i < intStr.size(); i++){
     if(!isdigit(intStr.at(i) || i == 0 && !isdigit(intStr.at(i)) && intStr.at(i) != '-')){
       return NULL;
     }
   }
-  int* ret = new int;
-  ret = &atoi(intStr.c_str());
+  int* ret = new int(atoi(intStr.c_str()));
   return ret;
 }

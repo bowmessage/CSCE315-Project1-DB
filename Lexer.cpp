@@ -1,13 +1,14 @@
 #include "Lexer.h"
+#include <iostream>
 
 Lexer::Lexer(){
+  p = Parser();
 }
 
 Lexer::~Lexer(){}
 
 void Lexer::readFile(string filename){
-  ifstream file;
-  file.open(filename);
+  ifstream file(filename.c_str());
   string line;
   if (file.is_open())
   {
@@ -23,19 +24,41 @@ void Lexer::readFile(string filename){
 void Lexer::getString(){
   string line;
   cout<<"Please enter your command and press ENTER.\n";
-  cin>>line;
+  /*char* tmp = new char[1000];
+  cin.get( tmp, 1000);
+  line = string(tmp);*/
+  //cin >> line;
+  getline(cin, line);
   cout<<"\n";
   
   tokenize(line);
 }
 
 void Lexer::tokenize(string line){
+  bool keepTokenizing = true;
+    cout<<"current == " + current + "\nline == " + line + "\n\n";
   if(line.empty()){
+    addToken();
+    keepTokenizing = false;
+    vector<Token>* toPass = new vector<Token>(todo);
+    cout << "toPass Size: " << toPass->size();
+    for(int i = 0; i < toPass->size(); i++){
+      std::cout << toPass->at(i).value << "\n";
+    }
+    bool didParse = p.parse(toPass);
+    if(didParse){
+      cout << "Parsed successfully.\n";
+    }
+    else{
+      cout << "Parse failed.\n";
+    }
+    todo.clear();
     //Give todo to parser to do stuff.
   }
   
   else if(line[0] == ' '){
     addToken();
+    line.erase(line.begin());
   }
   else if(line[0] == '('){
     current += line[0];
@@ -59,7 +82,8 @@ void Lexer::tokenize(string line){
     //current.append(line[0]);
     current += line[0];
     line.erase(line.begin());
-    //cout<<"current == " + current + "\nline == " + line + "\n\n";
+  }
+  if(keepTokenizing){
     tokenize(line);
   }
 }

@@ -39,7 +39,7 @@ bool DatabaseManager::createTable(string name, vector<Attribute> attributes, vec
   if(database.getRelationByName(name) == NULL){
     vector<Attribute*> keyPointers;
     for(int i = 0; i < keys.size(); i++){
-      keyPointers.push_back(*keys[i]);
+      keyPointers.push_back(&keys[i]);
     }
     database.addRelation(Relation(name, attributes, keyPointers));
     return true;

@@ -23,8 +23,9 @@ class Parser{
 
 
     void toUpper(string& in);
+    Token tokenAtCurPos(vector<Token>* t);
 
-    void removeFirst(vector<Token>* t);
+    void removeFirst();
 
     bool parse(vector<Token>* t); 
 
@@ -48,12 +49,12 @@ class Parser{
 
 
     string condition(vector<Token>* t);
-    bool conjunction(vector<Token>* t);
-    bool comparison(vector<Token>* t);
-    bool op(vector<Token>* t);
-    bool operand(vector<Token>* t);
+    string conjunction(vector<Token>* t);
+    string comparison(vector<Token>* t);
+    string op(vector<Token>* t);
+    string operand(vector<Token>* t);
     bool attributeName(vector<Token>* t);
-    bool attributeList(vector<Token>* t);
+    vector<Attribute>* attributeList(vector<Token>* t);
 
     bool openCmd(vector<Token>* t);
     bool closeCmd(vector<Token>* t);

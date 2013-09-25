@@ -95,7 +95,7 @@ int Relation::getAttributeIndexByName(string n){
 
 bool Relation::operator==(const Relation &other){
   return (name == other.name) &&
-    (attributes == other.attributes) &&
+    //(attributes == other.attributes) &&
     (keys == other.keys) &&
     (tuples == other.tuples);
 }

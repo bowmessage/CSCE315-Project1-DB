@@ -6,7 +6,9 @@ int main(){
 
   Lexer l;
 
-  l.getString();
+  while(true){
+    l.getString();
+  }
 
 
 
