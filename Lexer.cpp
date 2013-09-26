@@ -41,7 +41,7 @@ void Lexer::tokenize(string line){
     addToken();
     keepTokenizing = false;
     vector<Token>* toPass = new vector<Token>(todo);
-    cout << "toPass Size: " << toPass->size();
+    cout << "toPass Size: " << toPass->size() << "\n";
     for(int i = 0; i < toPass->size(); i++){
       std::cout << toPass->at(i).value << "\n";
     }
@@ -57,10 +57,12 @@ void Lexer::tokenize(string line){
   }
   
   else if(line[0] == ' '){
+	printf("Found a space.");
     addToken();
     line.erase(line.begin());
   }
   else if(line[0] == '('){
+	  if(current != "") addToken();
     current += line[0];
     line.erase(line.begin());
     addToken();
@@ -68,11 +70,13 @@ void Lexer::tokenize(string line){
   else if(line[0] == ')'){
 
     addToken();
+	printf("Current string is %s\n", current.c_str());
     current += line[0];
     line.erase(line.begin());
     addToken();
   }
   else if(line[0] == '"'){
+	  if(current != "") addToken();
     current += line[0];
     line.erase(line.begin());
     addToken();
