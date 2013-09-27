@@ -81,6 +81,12 @@ void Lexer::tokenize(string line){
     line.erase(line.begin());
     addToken();
   }
+  else if(line[0] == ';'){
+	  if(current != "") addToken();
+    current += line[0];
+    line.erase(line.begin());
+    addToken();
+  }
   
   else{
     //current.append(line[0]);
@@ -167,7 +173,7 @@ void Lexer::addToken(){
     else todo.push_back(Token(Token::CLOSEQUOTE, current));*/
     todo.push_back(Token(Token::QUOTE, current ));
   }
-  else {
+  else if(current.find_first_not_of(' ') != std::string::npos){
     todo.push_back(Token(Token::LITERAL, current));
   }
   current = "";
