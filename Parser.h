@@ -35,7 +35,7 @@ class Parser{
     string literal(vector<Token>* t);
     bool literal(vector<Token>* t, string s);
     string relationName(vector<Token>* t);
-    bool identifier(vector<Token>* t);
+    string identifier(vector<Token>* t);
     Relation* expression(vector<Token>* t);
 
 
@@ -53,7 +53,7 @@ class Parser{
     string comparison(vector<Token>* t);
     string op(vector<Token>* t);
     string operand(vector<Token>* t);
-    bool attributeName(vector<Token>* t);
+    string attributeName(vector<Token>* t);
     vector<Attribute>* attributeList(vector<Token>* t);
 
     bool openCmd(vector<Token>* t);

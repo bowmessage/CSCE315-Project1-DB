@@ -6,7 +6,6 @@ using namespace std;
 
 
 DatabaseManager::DatabaseManager(){
-
 }
 
 DatabaseManager::~DatabaseManager(){

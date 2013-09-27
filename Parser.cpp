@@ -9,6 +9,7 @@
 #define DEBUG 1
 
 Parser::Parser(){
+  man = new DatabaseManager();
 }
 
 Parser::Parser(DatabaseManager* m){
@@ -17,6 +18,7 @@ Parser::Parser(DatabaseManager* m){
 
 
 Parser::~Parser(){
+  delete man;
 }
 
 
@@ -32,7 +34,7 @@ bool Parser::parse(vector<Token>* t){
 bool Parser::query(vector<Token>* t){
   string name;
   Relation* r = NULL;
-  bool ret = ((name=relationName(t)) != "") && literal(t, "->") && ((r = expression(t)) != NULL);
+  bool ret = ((name=relationName(t)) != "") && literal(t, "<-") && ((r = expression(t)) != NULL);
   return ret;
 }
 
@@ -52,7 +54,13 @@ Relation* Parser::atomicExpr(vector<Token>* t){
   int curPosNow = curPos;
   string name;
   bool isARelationName = (name = relationName(t)) != "";
+  if(DEBUG){
+    cout << "atomic expr check: is relation name: " << isARelationName << "\n";
+  }
   if(isARelationName){
+    if(DEBUG){
+      cout << "PTR RET: " << (void*) man->database.getRelationByName(name) << "\n";
+    }
     return man->database.getRelationByName(name);
   }
   else{
@@ -241,7 +249,7 @@ string Parser::operand(vector<Token>* t){
   else return "";
 }
 
-bool Parser::attributeName(vector<Token>* t){
+string Parser::attributeName(vector<Token>* t){
   return identifier(t);
 }
 
@@ -264,12 +272,18 @@ vector<Attribute>* Parser::attributeList(vector<Token>* t){
 }
 
 string Parser::literal(vector<Token>* t){
+  if(DEBUG){
+    cout << "Seeing if pos " << curPos << " == literal value of any kind.\n";
+  }
   string ret = tokenAtCurPos(t).value;
   removeFirst();
   return ret;
 }
 
 bool Parser::literal(vector<Token>* t, string s){
+  if(DEBUG){
+    cout << "Seeing if pos " << curPos << " == " << s << "\n";
+  }
   if(tokenAtCurPos(t).value == s){
     removeFirst();
     return true;
@@ -281,12 +295,7 @@ string Parser::relationName(vector<Token>* t){
   if(DEBUG){
     cout << "Relation Name Test... curPos: " << curPos << ".\n";
   }
-  if(identifier(t)){
-    string ret = tokenAtCurPos(t).value;
-    removeFirst();
-    return ret;
-  }
-  return "";
+  return identifier(t);
 }
 
 Token Parser::tokenAtCurPos(vector<Token>* t){
@@ -297,7 +306,7 @@ Token Parser::tokenAtCurPos(vector<Token>* t){
   else return t->at(curPos);
 }
 
-bool Parser::identifier(vector<Token>* t){
+string Parser::identifier(vector<Token>* t){
   if(DEBUG){
     std::cout << "Identifier test... curPos: " << curPos << ".\n";
     std::cout << "Value is: " << tokenAtCurPos(t).value << ".\n";
@@ -317,6 +326,7 @@ bool Parser::identifier(vector<Token>* t){
     || upperVal == "OPEN"
     || upperVal == "CLOSE"
     || upperVal == "EXIT"
+    || upperVal == "INSERT"
     || upperVal == "SELECT"
     || upperVal == "PROJECT"
     || upperVal == "RENAME"
@@ -328,21 +338,24 @@ bool Parser::identifier(vector<Token>* t){
     || upperVal == "("
     || upperVal == ")"
     || upperVal == "\""
-    ) return false;
+    ) return "";
 
   for(int i = 0; i < val.size(); i++){
     if(i == 0){
       if(!isalpha(val[i])){
-        throw runtime_error("Identifier must start with alpha.");
+        return "";
+        //throw runtime_error("Identifier must start with alpha.");
       }
     }
     else{
       if(!isalnum(val[i])){
-        throw runtime_error("Identifier must be alphanumeric.");
+        return "";
+        //throw runtime_error("Identifier must be alphanumeric.");
       }
     }
   }
-  return true;
+  removeFirst();
+  return val;
 }
 
 void Parser::toUpper(string& in){
@@ -353,6 +366,9 @@ void Parser::toUpper(string& in){
 
 
 bool Parser::command(vector<Token>* t){
+  if(DEBUG){
+    cout << "Testing if command...\n";
+  }
   return openCmd(t) ||
     closeCmd(t) ||
     writeCmd(t) ||
@@ -400,6 +416,7 @@ bool Parser::writeCmd(vector<Token>* t){
   }
   else{
     curPos = curPosNow;
+    return false;
   }
 }
 bool Parser::exitCmd(vector<Token>* t){
@@ -415,9 +432,11 @@ bool Parser::exitCmd(vector<Token>* t){
 }
 bool Parser::showCmd(vector<Token>* t){
   int curPosNow = curPos;
+  Relation* toShow;
   bool isValid = literal(t, "SHOW") &&
-    atomicExpr(t);
+    (toShow = atomicExpr(t)) != NULL;
   if(isValid){
+    man->show(toShow->name);
     return true;
   }
   else{
@@ -442,7 +461,15 @@ bool Parser::createCmd(vector<Token>* t){
     (keyAttrs = attributeList(t)) != NULL &&
     literal(t, ")");
   if(isValid){
+    if(DEBUG){
+      cout << "typed Attrs size: " << typedAttrs->size() << "\n";
+      cout << "key Attrs size: " << keyAttrs->size() << "\n";
+      cout << "Table Name: " << name << "\n";
+    }
     man->createTable(name, *typedAttrs, *keyAttrs);
+    //delete typedAttrs;
+    //TODO: decide if we need these deletes here and elsewhere
+    //delete keyAttrs;
     return true;
   }
   else{
@@ -452,11 +479,11 @@ bool Parser::createCmd(vector<Token>* t){
 }
 bool Parser::updateCmd(vector<Token>* t){
   int curPosNow = curPos;
-  string name;
+  string rName, aName;
   bool isValid =  literal(t, "UPDATE") &&
-    (name = relationName(t)) != "" &&
+    (rName = relationName(t)) != "" &&
     literal(t, "SET") &&
-    attributeName(t) &&
+    (aName = attributeName(t)) != "" &&
     literal(t, "=") &&
     (literal(t) != "") &&
     literal(t, "WHERE") &&
@@ -478,6 +505,7 @@ bool Parser::insertCmd(vector<Token>* t){
     literal(t, "INTO") &&
     (relation1 = relationName(t)) != "" &&
     literal(t, "VALUES") &&
+    literal(t, "FROM") &&
     (literals = literalList(t)) != NULL;
   if(!firstHalf){
     curPos = curPosBeforeFirstHalf;
@@ -511,7 +539,9 @@ vector<string>* Parser::literalList(vector<Token>* t){
   vector<string>* ret = new vector<string>();
   bool startsRight = literal(t, "(");
   bool validList = false;
-    while(literal(t) != ""){
+  string nextLiteral;
+    while((nextLiteral = literal(t)) != ""){
+      ret->push_back(nextLiteral);
       if(!literal(t, ",")) {
         validList = true;
         break;
@@ -555,9 +585,10 @@ vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
 }
 
 string Parser::type(vector<Token>* t){
+  int varcharLen = -1;
   bool firstHalf = literal(t, "VARCHAR") &&
     literal(t, "(") &&
-    integer(t) &&
+    (varcharLen = *integer(t)) != NULL &&
     literal(t, ")");
   if(!firstHalf){
     if(literal(t, "INTEGER")){
@@ -574,10 +605,11 @@ int* Parser::integer(vector<Token>* t){
   //Returns null on invalid integer
   string intStr = tokenAtCurPos(t).value;
   for(int i = 0; i < intStr.size(); i++){
-    if(!isdigit(intStr.at(i) || i == 0 && !isdigit(intStr.at(i)) && intStr.at(i) != '-')){
+    if(!isdigit(intStr.at(i))){
       return NULL;
     }
   }
   int* ret = new int(atoi(intStr.c_str()));
+  removeFirst();
   return ret;
 }

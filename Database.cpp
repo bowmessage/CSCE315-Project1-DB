@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include "Database.h"
+#include <iostream>
 
 Database::Database(){
 }
@@ -24,6 +25,7 @@ Relation Database::removeRelation(Relation r){
 
 Relation* Database::getRelationByName(string n){
   for(int i = 0; i < relations.size(); i++){
+    std::cout << "Checking that " << relations[i].name << " == " << n << "? \n";
     if(relations[i].name == n){
       return &relations[i];
     }

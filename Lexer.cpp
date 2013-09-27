@@ -2,7 +2,6 @@
 #include <iostream>
 
 Lexer::Lexer(){
-  p = Parser();
 }
 
 Lexer::~Lexer(){}
@@ -43,7 +42,7 @@ void Lexer::tokenize(string line){
     vector<Token>* toPass = new vector<Token>(todo);
     cout << "toPass Size: " << toPass->size() << "\n";
     for(int i = 0; i < toPass->size(); i++){
-      std::cout << toPass->at(i).value << "\n";
+      std::cout << "|" << toPass->at(i).value << "|\n";
     }
     bool didParse = p.parse(toPass);
     if(didParse){
@@ -77,11 +76,15 @@ void Lexer::tokenize(string line){
   }
   else if(line[0] == '"'){
 	  if(current != "") addToken();
+    line.erase(line.begin());
+  }
+  else if(line[0] == ';'){
+	  if(current != "") addToken();
     current += line[0];
     line.erase(line.begin());
     addToken();
   }
-  else if(line[0] == ';'){
+  else if(line[0] == ','){
 	  if(current != "") addToken();
     current += line[0];
     line.erase(line.begin());

@@ -23,6 +23,7 @@ class Relation{
     //If it sarts with !..., parse as int.
     //If it starts with !!..., parse with string that starts "!.."
 
+    Relation();
     Relation(string n);
     Relation(string n, vector<Attribute> a);
     Relation(string n, vector<Attribute> a, vector<Attribute*> k);

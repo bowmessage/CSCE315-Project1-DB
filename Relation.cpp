@@ -2,6 +2,9 @@
 
 using namespace std;
 
+Relation::Relation(){
+}
+
 //creates a relation of name "n"
 Relation::Relation(string n){
 		name = n;
