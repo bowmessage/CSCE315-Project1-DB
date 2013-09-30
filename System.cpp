@@ -1,12 +1,14 @@
-#include "DatabaseManager.h"
+#include "Lexer.h"
 #include "System.h"
 #include <fstream>
 #include <iostream>
 
+Lexer lex;
+
 System::System(){}
 System::~System(){}
 
-DatabaseManager dbms;
+
 
 void addEmployee(){
 	string name, id, position;
@@ -28,6 +30,164 @@ void addEmployee(){
 	}
 }
 
+void addCustomer(){
+	string name, id, level;
+	printf("Please enter the new customer's name:\n");
+	cin >> name;
+	printf("Please enter the new customer's ID number:\n");
+	cin >> id;
+	printf("Please enter the new customer's level:\n");
+	cin >> level;
+	
+	ofstream file;
+	file.open("Customers", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Customers VALUES FROM (\"" + name + "\", \"" + id + "\", \"" + level + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Customers\"\n");
+	}
+}
+
+void addProduct(){
+	string name, id;
+	int price, quant;
+	printf("Please enter the new product's name:\n");
+	cin >> name;
+	printf("Please enter the new product's UPC number:\n");
+	cin >> id;
+	printf("Please enter the new product's price:\n");
+	cin >> price;
+	printf("Please enter the quantity of the new product:");
+	cin >> quant;
+	
+	ofstream file;
+	file.open("Products", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Products VALUES FROM (\"" + name + "\", \"" + id + "\", \"" + price + "\", \"" + quant + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
+
+void addTransaction(){
+	string id, date, time;
+	int rev;
+	printf("Please enter the date (MM\DD\YYYY):\n");
+	cin >> date;
+	printf("Please enter the time (HH:MM):");
+	cin >> time;
+	printf("Please enter the new transaction's ID number:\n");
+	cin >> id;
+	printf("Please enter the net revenue for the transaction:\n");
+	cin >> rev;
+	
+	ofstream file;
+	file.open("Transactions", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Transactions VALUES FROM (\"" + date + "\", \"" + time + "\", \"" + id + "\", \"" + rev + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Transactions\"\n");
+	}
+}
+
+void updateEmployee(){
+	stringstream ss;
+	string attr;
+	printf("Which employee attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Employees", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Employees SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Employees\"\n");
+	}
+}
+
+void updateCustomer(){
+	stringstream ss;
+	string attr;
+	printf("Which customer attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Customers", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Customers SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Customers\"\n");
+	}
+}
+
+void updateProduct(){
+	stringstream ss;
+	string attr;
+	printf("Which product attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Products", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Products SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
+
+void updateTransaction(){
+	stringstream ss;
+	string attr;
+	printf("Which transaction attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Transactions", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Transactions SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Transactions\"\n");
+	}
+}
+
 void System::showMainMenu(){
   int option = 0;
   while (option != 5){
@@ -44,10 +204,10 @@ void System::showMainMenu(){
       //System::showUpdateMenu();
       break;
     case 4:
-      //System::showDeleteMenu();
+      System::showDeleteMenu();
       break;
     case 5:
-		break;
+      break;
       //write all data to a file and close out 
     }
   }
@@ -56,6 +216,9 @@ void System::showMainMenu(){
 
 void System::showDisplayMenu(){
   int option = 0;
+  
+  lex.readFile("Employees");
+  
   string  input;
   while (option != 3){
     printf("DISPLAY MENU:\n 1)Single Customer/Product/Transaction\n 2)All\n 3)BACK TO MAIN MENU\n");
@@ -64,13 +227,13 @@ void System::showDisplayMenu(){
     	case 1:
     	  printf("Enter name of Customer/Product/Transaction:");
     	  cin >> input;
-	  printf("\nPrinting...\n");
-    	  dbms.show(input);
+	      printf("\nPrinting...\n");
+    	  (lex.p.man)->show(input);
     	  break;
     	case 2:
     	  printf("Printing all...\n");
-	  for(int i = 0; i < dbms.database.relations.size(); i++){
-	    dbms.show(&dbms.database.relations[i]);
+	  for(int i = 0; i < (lex.p.man)->database.relations.size(); i++){
+	    (lex.p.man)->show(&(lex.p.man)->database.relations[i]);
 	  }
     	  break;
     	case 3:
@@ -82,7 +245,7 @@ void System::showDisplayMenu(){
 void System::showCreateMenu(){
 	int option = 0;
 	while(option != 4){
-		printf("CREATE MENU:\n 1) Create an employee\n 2) Create a product\n 3) New transaction\n 4) BACK\n");
+		printf("CREATE MENU:\n 1) Create an employee\n 2) Create a customer\n 3) Create a product\n 4) New transaction\n 5) BACK\n");
 		cin >> option;
 	
 		switch(option){
@@ -90,13 +253,15 @@ void System::showCreateMenu(){
 				addEmployee();
 				break;
 			case 2:
-				printf("Create a new product here!\n");
+				addCustomer();
 				break;
 			case 3:
-				printf("Create a new transaction here!\n");
+				addProduct();
 				break;
 			case 4:
-				printf("Take it on back\n");
+				addTransaction();
+				break;
+			case 5:
 				break;
 		}
 	}
@@ -105,20 +270,23 @@ void System::showCreateMenu(){
 void System::showUpdateMenu(){
 	int option = 0;
 	while(option != 4){
-	  printf("UPDATE MENU:\n 1)Update an employee/customer\n 2) Update a product\n 3)Update a transaction\n 4) BACK TO MAIN MENU\n");
+	  printf("UPDATE MENU:\n 1)Update an employee\n 2)Update a customer\n 3) Update a product\n 4)Update a transaction\n 5) BACK TO MAIN MENU\n");
 	  cin >> option;
 	  switch(option){
 		case 1:
-		  printf("");
+		  updateEmployee();
 		  break;
 		case 2:
-		  printf("");
+		  updateCustomer();
 		  break;
 		case 3:
-		  printf("");
+		  updateProduct();
 		  break;
 		case 4:
-			break;
+		  updateTransaction();
+		  break;
+		case 5:
+		  break;
 	  }
 	}
 }
@@ -134,25 +302,25 @@ void showDeleteMenu(){
     		  printf("Enter name of Customer/Employee to be deleted:");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  dbms.deleteTable(input);
+    	  	  (lex.p.man)->deleteTable(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 2:
  	  	  printf("Enter name of Product to be deleted:");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  dbms.deleteTable(input);
+    	  	  (lex.p.man)->deleteTable(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 3:
  	  	  printf("Enter name of Transaction to be deleted:");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  dbms.deleteTable(input);
+    	  	  (lex.p.man)->deleteTable(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 4:
-			break;
+		  break;
  	  }
  	}
 }
