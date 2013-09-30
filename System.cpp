@@ -73,6 +73,29 @@ void addProduct(){
 	}
 }
 
+void addTransaction(){
+	string id, date, time;
+	int rev;
+	printf("Please enter the date (MM\DD\YYYY):\n");
+	cin >> date;
+	printf("Please enter the time (HH:MM):");
+	cin >> time;
+	printf("Please enter the new transaction's ID number:\n");
+	cin >> id;
+	printf("Please enter the net revenue for the transaction:\n");
+	cin >> rev;
+	
+	ofstream file;
+	file.open("Transactions", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Transactions VALUES FROM (\"" + date + "\", \"" + time + "\", \"" + id + "\", \"" + rev + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Transactions\"\n");
+	}
+}
+
 void System::showMainMenu(){
   int option = 0;
   while (option != 5){
@@ -144,10 +167,9 @@ void System::showCreateMenu(){
 				addProduct();
 				break;
 			case 4:
-				printf("Create a new transaction here!\n");
+				addTransaction();
 				break;
 			case 5:
-				printf("Take it on back\n");
 				break;
 		}
 	}
