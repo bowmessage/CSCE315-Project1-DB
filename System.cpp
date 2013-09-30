@@ -96,6 +96,98 @@ void addTransaction(){
 	}
 }
 
+void updateEmployee(){
+	stringstream ss;
+	string attr;
+	printf("Which employee attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Employees", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Employees SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Employees\"\n");
+	}
+}
+
+void updateCustomer(){
+	stringstream ss;
+	string attr;
+	printf("Which customer attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Customers", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Customers SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Customers\"\n");
+	}
+}
+
+void updateProduct(){
+	stringstream ss;
+	string attr;
+	printf("Which product attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Products", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Products SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
+
+void updateTransaction(){
+	stringstream ss;
+	string attr;
+	printf("Which transaction attribute do you wish to update?:")
+	cin >> attr;
+	printf("What is the current value of the attribute you wish to update?:\n")
+	string old;
+	cin >> old;
+	printf("What do you want to change that attribute to?:")
+	string new;
+	cin >> new;
+	
+	ofstream file;
+	file.open("Transactions", std::ios_bas_app);
+	if(file.is_open()){
+		file << "UPDATE Transactions SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";"
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Transactions\"\n");
+	}
+}
+
 void System::showMainMenu(){
   int option = 0;
   while (option != 5){
@@ -182,16 +274,16 @@ void System::showUpdateMenu(){
 	  cin >> option;
 	  switch(option){
 		case 1:
-		  printf("");
+		  updateEmployee();
 		  break;
 		case 2:
-		  printf("");
+		  updateCustomer();
 		  break;
 		case 3:
-		  printf("");
+		  updateProduct();
 		  break;
 		case 4:
-		  printf("")
+		  updateTransaction();
 		  break;
 		case 5:
 		  break;
