@@ -5,6 +5,7 @@ class System{
 		void addEmployee();
 		void addCustomer();
 		void addProduct();
+		void addTransaction();
 		void showMainMenu();
 		void showCreateMenu();
 		void showUpdateMenu();
