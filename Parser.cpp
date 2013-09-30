@@ -36,8 +36,9 @@ bool Parser::query(vector<Token>* t){
   Relation* r = NULL;
   bool ret = ((name=relationName(t)) != "") && literal(t, "<-") && ((r = expression(t)) != NULL);
   if(ret){
-    //cout << "asdf adding relation r..." << (void*) r << "\n";
-    //man->database.addRelation(*r);
+    cout << "asdf adding relation r..." << (void*) r << "\n";
+    r->name = name;
+    man->database.addRelation(*r);
     return true;
   }
   else return false;
@@ -89,10 +90,13 @@ Relation* Parser::selectionExpr(vector<Token>* t){
     literal(t, ")") &&
     (r = atomicExpr(t)) != NULL;
   if(valid){
-    Relation* ret;
-    Relation* tmp;
+    Relation* ret = NULL;
+    Relation* tmp = NULL;
     string curOp1, curOperator, curOp2;
     for(int i = 0; i < cond->size(); i++){
+      cout << "ret: " << (void*) ret << "\n";
+      cout << "tmp: " << (void*) tmp << "\n";
+      cout << "i: " << i << "\n";
       if((i+1) % 4 == 0){
         tmp = man->select(r->name, curOp1, curOperator, curOp2);
         //This is a && or ||... decide
@@ -101,7 +105,7 @@ Relation* Parser::selectionExpr(vector<Token>* t){
             ret = tmp;
           }
           else{
-            ret = &man->database.setUnion(*ret, *tmp);
+            ret = man->database.setUnion(*ret, *tmp);
           }
         }
         else if(cond->at(i).value == "&&"){
@@ -109,7 +113,7 @@ Relation* Parser::selectionExpr(vector<Token>* t){
             ret = tmp;
           }
           else{
-            ret = &man->database.setDifference(*ret, *tmp);
+            ret = man->database.setDifference(*ret, *tmp);
           }
         }
       }
@@ -119,8 +123,11 @@ Relation* Parser::selectionExpr(vector<Token>* t){
         curOp2 = cond->at(i).value;
       }
     }
+    if(ret == NULL){
+      ret = man->select(r->name, curOp1, curOperator, curOp2);
+    }
+    cout << "Return ret... " << (void*) ret << "\n";
     return ret;
-    //return man->select(r->name, "a", "==", "b");// cond, cond, cond);
   }
   else{
     curPos = curPosNow;
@@ -187,7 +194,7 @@ Relation* Parser::unionExpr(vector<Token>* t){
     literal(t, "+") &&
     (r2 = atomicExpr(t)) != NULL;
   if(isValid){
-    return &man->database.setUnion(*r1, *r2);
+    return man->database.setUnion(*r1, *r2);
   } else return NULL;
 }
 
@@ -198,7 +205,7 @@ Relation* Parser::differenceExpr(vector<Token>* t){
     literal(t, "-") &&
     (r2 = atomicExpr(t)) != NULL;
   if(isValid){
-    return &man->database.setDifference(*r1, *r2);
+    return man->database.setDifference(*r1, *r2);
   } else return NULL;
 }
 
@@ -209,7 +216,7 @@ Relation* Parser::productExpr(vector<Token>* t){
     literal(t, "*") &&
     (r2 = atomicExpr(t)) != NULL;
   if(isValid){
-    return &man->database.setProduct(*r1, *r2);
+    return man->database.setProduct(*r1, *r2);
   } else return NULL;
 }
 
@@ -395,7 +402,7 @@ string Parser::identifier(vector<Token>* t){
       }
     }
     else{
-      if(!isalnum(val[i])){
+      if(!isalnum(val[i]) && val[i] != '_'){
         return "";
         //throw runtime_error("Identifier must be alphanumeric.");
       }
@@ -527,15 +534,65 @@ bool Parser::createCmd(vector<Token>* t){
 bool Parser::updateCmd(vector<Token>* t){
   int curPosNow = curPos;
   string rName, aName;
+  string lit;
+  vector<Token>* cond;
   bool isValid =  literal(t, "UPDATE") &&
     (rName = relationName(t)) != "" &&
     literal(t, "SET") &&
     (aName = attributeName(t)) != "" &&
     literal(t, "=") &&
-    (literal(t) != "") &&
+    (lit = literal(t)) != "" &&
     literal(t, "WHERE") &&
-    (condition(t) != NULL);
+    ((cond = condition(t)) != NULL);
   if(isValid){
+    Relation* toUpdate = man->database.getRelationByName(rName);
+    if(toUpdate == NULL){
+      return NULL;
+    }
+
+    Relation* ret = NULL;
+    Relation* tmp = NULL;
+    string curOp1, curOperator, curOp2;
+    for(int i = 0; i < cond->size(); i++){
+      if((i+1) % 4 == 0){
+        tmp = man->select(rName, curOp1, curOperator, curOp2);
+        //This is a && or ||... decide
+        if(cond->at(i).value == "||"){
+          if(ret == NULL){
+            ret = tmp;
+          }
+          else{
+            ret = man->database.setUnion(*ret, *tmp);
+          }
+        }
+        else if(cond->at(i).value == "&&"){
+          if(ret == NULL){
+            ret = tmp;
+          }
+          else{
+            ret = man->database.setDifference(*ret, *tmp);
+          }
+        }
+      }
+      else{
+        curOp1 = cond->at(i).value; i++;
+        curOperator = cond->at(i).value; i++;
+        curOp2 = cond->at(i).value;
+      }
+    }
+    if(ret == NULL){
+      ret = man->select(rName, curOp1, curOperator, curOp2);
+    }
+
+    for(int i = 0; i < ret->tuples.size(); i++){
+      for(int j = 0; j < toUpdate->tuples.size(); j++){
+        if(ret->tuples.at(i) == toUpdate->tuples.at(j)){
+          int index = toUpdate->getAttributeIndexByName(aName);
+          toUpdate->tuples.at(j).at(index) = lit;
+        }
+      }
+    }
+
     return true;
   }
   else{

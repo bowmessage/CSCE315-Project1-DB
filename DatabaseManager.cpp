@@ -122,6 +122,16 @@ Relation* DatabaseManager::select(string relationName, string op1, string compar
       }
       return new Relation(relationName, curRelation->attributes, retTuples);
     }
+    else if(comparison == ">"){
+      //op1 will be an attribute name..
+      int attrIndex = curRelation->getAttributeIndexByName(op1);
+      for(int i = 0; i < curRelation->tuples.size(); i++){
+        if(curRelation->tuples[i][attrIndex] == op2){
+          retTuples.push_back(curRelation->tuples[i]);
+        }
+      }
+      return new Relation(relationName, curRelation->attributes, retTuples);
+    }
     else{
       //Comparison string not found
       return NULL;
