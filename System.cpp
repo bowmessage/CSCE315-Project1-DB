@@ -87,7 +87,7 @@ void System::showCreateMenu(){
 	
 		switch(option){
 			case 1:
-				printf("Create a new employee/customer here\n");
+				addEmployee();
 				break;
 			case 2:
 				printf("Create a new product here!\n");
