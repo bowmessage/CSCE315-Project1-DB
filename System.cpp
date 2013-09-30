@@ -34,7 +34,7 @@ void addCustomer(){
 	string name, id, level;
 	printf("Please enter the new customer's name:\n");
 	cin >> name;
-	printf("Please enter the new customer's ID number:\n");
+	printf("Please enter the new customer's UPC number:\n");
 	cin >> id;
 	printf("Please enter the new customer's level:\n");
 	cin >> level;
