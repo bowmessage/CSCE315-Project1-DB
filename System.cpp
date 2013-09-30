@@ -11,11 +11,11 @@ System::~System(){}
 void System::showMainMenu(){
   int option = 0;
   while (option != 6){
-    cout << "POINT OF SALE MENU: \n  1)Display  \n  2)Create  \n  3)Update  \n  4)Search  \n  5)Delete  \n  6)EXIT \n";
+    printf("POINT OF SALE MENU: \n  1)Display  \n  2)Create  \n  3)Update  \n  4)Search  \n  5)Delete  \n  6)EXIT \n");
     cin >> option;
     switch(option){
     case 1:
-      //System::showDisplayMenu();
+      System::showDisplayMenu();
       break;
     case 2:
       System::showCreateMenu();
@@ -35,15 +35,26 @@ void System::showMainMenu(){
 }
 
 //need input from prof before continuing further
-/*void showDisplayMenu(){
+/*void System::showDisplayMenu(){
   int option = 0;
-  string  
+  string  input;
   while (option != 3){
-    cout << "DISPLAY MENU:  \n  1)Customer/Product/Transaction        ";
-       
+    printf("DISPLAY MENU:  \n  1)Single Customer/Product/Transaction  \n  2)All  \n  3)BACK TO MAIN MENU  \n ");
+    cin >> option;
+    switch(option){
+    	case 1:
+    		printf("Enter name of Customer/Product/Transaction:");
+    		cin >> input;
+    		s.dbms.show(getRelationByName(input));
+    		break;
+    	case 2:
+    		printf("")
+    	
+    	case 3:
+    }
     
 	}
-}*/
+}*/ 
 
 void System::showCreateMenu(){
 	int option = 0;
