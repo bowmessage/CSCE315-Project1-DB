@@ -178,7 +178,7 @@ void System::showCreateMenu(){
 void System::showUpdateMenu(){
 	int option = 0;
 	while(option != 4){
-	  printf("UPDATE MENU:\n 1)Update an employee/customer\n 2) Update a product\n 3)Update a transaction\n 4) BACK TO MAIN MENU\n");
+	  printf("UPDATE MENU:\n 1)Update an employee\n 2)Update a customer\n 3) Update a product\n 4)Update a transaction\n 5) BACK TO MAIN MENU\n");
 	  cin >> option;
 	  switch(option){
 		case 1:
@@ -191,7 +191,10 @@ void System::showUpdateMenu(){
 		  printf("");
 		  break;
 		case 4:
-			break;
+		  printf("")
+		  break;
+		case 5:
+		  break;
 	  }
 	}
 }
