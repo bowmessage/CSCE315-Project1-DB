@@ -41,7 +41,7 @@ void System::showDisplayMenu(){
     	case 1:
     	  printf("Enter name of Customer/Product/Transaction:");
     	  cin >> input;
-	  printf("\n");
+	  printf("\nPrinting...\n");
     	  s.dbms.show(getRelationByName(input));
     	  break;
     	case 2:
