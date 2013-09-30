@@ -63,20 +63,18 @@ void System::showDisplayMenu(){
     	  printf("Enter name of Customer/Product/Transaction:");
     	  cin >> input;
 	  printf("\nPrinting...\n");
-    	  s.dbms.show(input);
+    	  dbms.show(input);
     	  break;
     	case 2:
     	  printf("Printing all...\n")
-	  for(int i = 0; i < s.dbms.database.relations.size(); i++){
-	    s.dbms.show(s.dbms.database.relations[i]);
+	  for(int i = 0; i < dbms.database.relations.size(); i++){
+	    dbms.show(s.dbms.database.relations[i]);
 	  }
     	  break;
     	case 3:
-        showMainMenu();
 	  break;
     }
   }
-  showMainMenu();
 }
 
 void System::showCreateMenu(){
@@ -118,10 +116,9 @@ void System::showUpdateMenu(){
 		  printf("");
 		  break;
 		case 4:
-		  showMainMenu();
+		  break;
 	  }
 	}
-	showMainMenu();
 }
 
 void showDeleteMenu(){
@@ -152,8 +149,7 @@ void showDeleteMenu(){
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 4:
- 	  	  showMainMenu();
+ 	  	  break;
  	  }
  	}
- 	showMainMenu();
 }
