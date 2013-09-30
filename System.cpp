@@ -42,7 +42,7 @@ void System::showDisplayMenu(){
     	  printf("Enter name of Customer/Product/Transaction:");
     	  cin >> input;
 	  printf("\nPrinting...\n");
-    	  s.dbms.show(getRelationByName(input));
+    	  s.dbms.show(input);
     	  break;
     	case 2:
     	  printf("Printing all...\n")
@@ -108,16 +108,28 @@ void showDeleteMenu(){
  	while(option != 4){
  	  printf("DELETE MENU:\n 1)Delete an employee/customer\n 2) Delete a product\n 3)Delete a transaction\n 4) BACK TO MAIN MENU\n");
  	  cin >> option;
- 	  switch (option){
+ 	  switch(option){
  	  	case 1:
- 	  	  printf("");
- 	  	  break;
+    		  printf("Enter name of Customer/Employee to be deleted:");
+    	   	  cin >> input;
+	  	  printf("\nDeleting...\n");
+    	  	  dbms.deleteTable(input);
+    	  	  printf("\nDeleted.\n");
+    		  break;
  	  	case 2:
- 	  	  printf("");
- 	  	  break;
+ 	  	  printf("Enter name of Product to be deleted:");
+    	   	  cin >> input;
+	  	  printf("\nDeleting...\n");
+    	  	  dbms.deleteTable(input);
+    	  	  printf("\nDeleted.\n");
+    		  break;
  	  	case 3:
- 	  	  printf("");
- 	  	  break;
+ 	  	  printf("Enter name of Transaction to be deleted:");
+    	   	  cin >> input;
+	  	  printf("\nDeleting...\n");
+    	  	  dbms.deleteTable(input);
+    	  	  printf("\nDeleted.\n");
+    		  break;
  	  	case 4:
  	  	  showMainMenu();
  	  }
