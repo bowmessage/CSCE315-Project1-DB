@@ -5,6 +5,27 @@
 System::System(){}
 System::~System(){}
 
+DatabaseManager dbms;
+
+void addEmployee(){
+	string name, id, position;
+	printf("Please enter the new employee's name:\n");
+	cin >> name;
+	printf("Please enter the new employee's ID number:\n");
+	cin >> id;
+	printf("Please enter the new employee's position:\n");
+	cin >> position;
+	
+	ofstream file;
+	file.open("Employees", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Employees VALUES FROM (\"" + name + "\", \"" + id + "\", \"" + position + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Employees\"\n");
+	}
+}
 
 void System::showMainMenu(){
   int option = 0;
