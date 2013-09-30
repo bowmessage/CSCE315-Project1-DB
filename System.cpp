@@ -50,6 +50,29 @@ void addCustomer(){
 	}
 }
 
+void addProduct(){
+	string name, id;
+	int price, quant;
+	printf("Please enter the new product's name:\n");
+	cin >> name;
+	printf("Please enter the new product's ID number:\n");
+	cin >> id;
+	printf("Please enter the new product's price:\n");
+	cin >> price;
+	printf("Please enter the quantity of the new product:");
+	cin >> quant;
+	
+	ofstream file;
+	file.open("Products", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Products VALUES FROM (\"" + name + "\", \"" + id + "\", \"" + price + "\", \"" + quant + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
+
 void System::showMainMenu(){
   int option = 0;
   while (option != 5){
@@ -118,7 +141,7 @@ void System::showCreateMenu(){
 				addCustomer();
 				break;
 			case 3:
-				printf("Create a new product here!\n");
+				addProduct();
 				break;
 			case 4:
 				printf("Create a new transaction here!\n");
