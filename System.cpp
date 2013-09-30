@@ -35,7 +35,7 @@ void System::showDisplayMenu(){
   int option = 0;
   string  input;
   while (option != 3){
-    printf("DISPLAY MENU:  \n  1)Single Customer/Product/Transaction  	\n  2)All  \n  3)BACK TO MAIN MENU  \n ");
+    printf("DISPLAY MENU:\n 1)Single Customer/Product/Transaction\n 2)All\n 3)BACK TO MAIN MENU\n");
     cin >> option;
     switch(option){
     	case 1:
@@ -61,7 +61,7 @@ void System::showDisplayMenu(){
 void System::showCreateMenu(){
 	int option = 0;
 	while(option != 4){
-		printf("CREATE MENU: \n  1) Create an employee \n  2) Create a product \n  3) New transaction \n  4) BACK \n");
+		printf("CREATE MENU:\n 1) Create an employee\n 2) Create a product\n 3) New transaction\n 4) BACK\n");
 		cin >> option;
 	
 		switch(option){
@@ -84,7 +84,7 @@ void System::showCreateMenu(){
 void System::showUpdateMenu(){
 	int option = 0;
 	while(option != ){
-	  printf("UPDATE MENU:\n 1)Update an employee/customer  \n 2) Update a product \n 3)Update a transaction \n 4) BACK TO MAIN MENU \n");
+	  printf("UPDATE MENU:\n 1)Update an employee/customer\n 2) Update a product\n 3)Update a transaction\n 4) BACK TO MAIN MENU\n");
 	  cin >> option;
 	  switch(option){
 		case 1:
@@ -106,7 +106,7 @@ void System::showUpdateMenu(){
 void showDeleteMenu(){
  	int option = 0;
  	while(option != 4){
- 	  printf("DELETE MENU:\n 1)Delete an employee/customer  \n 2) Delete a product \n 3)Delete a transaction \n 4) BACK TO MAIN MENU \n");
+ 	  printf("DELETE MENU:\n 1)Delete an employee/customer\n 2) Delete a product\n 3)Delete a transaction\n 4) BACK TO MAIN MENU\n");
  	  cin >> option;
  	  switch (option){
  	  	case 1:
