@@ -36,7 +36,6 @@ bool Parser::query(vector<Token>* t){
   Relation* r = NULL;
   bool ret = ((name=relationName(t)) != "") && literal(t, "<-") && ((r = expression(t)) != NULL);
   if(ret){
-    cout << "asdf adding relation r..." << (void*) r << "\n";
     r->name = name;
     man->database.addRelation(*r);
     return true;
@@ -94,9 +93,6 @@ Relation* Parser::selectionExpr(vector<Token>* t){
     Relation* tmp = NULL;
     string curOp1, curOperator, curOp2;
     for(int i = 0; i < cond->size(); i++){
-      cout << "ret: " << (void*) ret << "\n";
-      cout << "tmp: " << (void*) tmp << "\n";
-      cout << "i: " << i << "\n";
       if((i+1) % 4 == 0){
         tmp = man->select(r->name, curOp1, curOperator, curOp2);
         //This is a && or ||... decide
@@ -126,7 +122,6 @@ Relation* Parser::selectionExpr(vector<Token>* t){
     if(ret == NULL){
       ret = man->select(r->name, curOp1, curOperator, curOp2);
     }
-    cout << "Return ret... " << (void*) ret << "\n";
     return ret;
   }
   else{
@@ -521,9 +516,6 @@ bool Parser::createCmd(vector<Token>* t){
       cout << "Table Name: " << name << "\n";
     }
     man->createTable(name, *typedAttrs, *keyAttrs);
-    //delete typedAttrs;
-    //TODO: decide if we need these deletes here and elsewhere
-    //delete keyAttrs;
     return true;
   }
   else{
@@ -658,7 +650,7 @@ vector<string>* Parser::literalList(vector<Token>* t){
 }
 
 bool Parser::deleteCmd(vector<Token>* t){
-  //TODO fix this
+  int curPosNow = curPos;
   string name;
   vector<Token>* cond;
   bool ret = literal(t, "DELETE") &&
@@ -666,7 +658,61 @@ bool Parser::deleteCmd(vector<Token>* t){
     (name = relationName(t)) != "" &&
     literal(t, "WHERE") &&
     (cond = condition(t)) != NULL;
-  return ret;
+  if(ret){
+
+    Relation* toUpdate = man->database.getRelationByName(name);
+    if(toUpdate == NULL){
+      return NULL;
+    }
+
+    Relation* ret = NULL;
+    Relation* tmp = NULL;
+    string curOp1, curOperator, curOp2;
+    for(int i = 0; i < cond->size(); i++){
+      if((i+1) % 4 == 0){
+        tmp = man->select(name, curOp1, curOperator, curOp2);
+        //This is a && or ||... decide
+        if(cond->at(i).value == "||"){
+          if(ret == NULL){
+            ret = tmp;
+          }
+          else{
+            ret = man->database.setUnion(*ret, *tmp);
+          }
+        }
+        else if(cond->at(i).value == "&&"){
+          if(ret == NULL){
+            ret = tmp;
+          }
+          else{
+            ret = man->database.setDifference(*ret, *tmp);
+          }
+        }
+      }
+      else{
+        curOp1 = cond->at(i).value; i++;
+        curOperator = cond->at(i).value; i++;
+        curOp2 = cond->at(i).value;
+      }
+    }
+    if(ret == NULL){
+      ret = man->select(name, curOp1, curOperator, curOp2);
+    }
+
+    for(int i = 0; i < ret->tuples.size(); i++){
+      for(int j = 0; j < toUpdate->tuples.size(); j++){
+        if(ret->tuples.at(i) == toUpdate->tuples.at(j)){
+          toUpdate->tuples.erase(toUpdate->tuples.begin() + j);
+          j--;
+        }
+      }
+    }
+    return true;
+  }
+  else{
+    curPos = curPosNow;
+    return false;
+  }
 }
 
 vector<Attribute>* Parser::typedAttributeList(vector<Token>* t){
