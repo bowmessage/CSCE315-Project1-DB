@@ -37,6 +37,7 @@ class Token{
 
 
     Token();
+    Token(string v);
     Token(Type t, string v);
     
     string value;

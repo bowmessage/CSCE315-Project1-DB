@@ -35,7 +35,12 @@ bool Parser::query(vector<Token>* t){
   string name;
   Relation* r = NULL;
   bool ret = ((name=relationName(t)) != "") && literal(t, "<-") && ((r = expression(t)) != NULL);
-  return ret;
+  if(ret){
+    //cout << "asdf adding relation r..." << (void*) r << "\n";
+    //man->database.addRelation(*r);
+    return true;
+  }
+  else return false;
 }
 
 Relation* Parser::expression(vector<Token>* t){
@@ -76,16 +81,46 @@ Relation* Parser::atomicExpr(vector<Token>* t){
 
 Relation* Parser::selectionExpr(vector<Token>* t){
   int curPosNow = curPos;
-  string cond;
+  vector<Token>* cond;
   Relation* r = NULL;
   bool valid = literal(t, "select") &&
     literal(t, "(") &&
-    (cond = condition(t)) != "" &&
+    (cond = condition(t)) != NULL &&
     literal(t, ")") &&
     (r = atomicExpr(t)) != NULL;
   if(valid){
-    //TODO: this cond cond cond is wrong.
-    return man->select(r->name, cond, cond, cond);
+    Relation* ret;
+    Relation* tmp;
+    string curOp1, curOperator, curOp2;
+    for(int i = 0; i < cond->size(); i++){
+      if((i+1) % 4 == 0){
+        tmp = man->select(r->name, curOp1, curOperator, curOp2);
+        //This is a && or ||... decide
+        if(cond->at(i).value == "||"){
+          if(ret == NULL){
+            ret = tmp;
+          }
+          else{
+            ret = &man->database.setUnion(*ret, *tmp);
+          }
+        }
+        else if(cond->at(i).value == "&&"){
+          if(ret == NULL){
+            ret = tmp;
+          }
+          else{
+            ret = &man->database.setDifference(*ret, *tmp);
+          }
+        }
+      }
+      else{
+        curOp1 = cond->at(i).value; i++;
+        curOperator = cond->at(i).value; i++;
+        curOp2 = cond->at(i).value;
+      }
+    }
+    return ret;
+    //return man->select(r->name, "a", "==", "b");// cond, cond, cond);
   }
   else{
     curPos = curPosNow;
@@ -178,51 +213,63 @@ Relation* Parser::productExpr(vector<Token>* t){
   } else return NULL;
 }
 
-string Parser::condition(vector<Token>* t){
-  string comp1, comp2;
-  if((comp1 = comparison(t)) != ""){
+vector<Token>* Parser::condition(vector<Token>* t){
+  vector<Token>* comp1;
+  vector<Token>* comp2;
+  vector<Token>* ret = new vector<Token>();
+  if((comp1 = comparison(t)) != NULL){
     int curPosNow = curPos;
-    if(literal(t, "||") && (comp2 = comparison(t)) != ""){
-      stringstream ss;
-      ss << comp1 << " && " << comp2;
-      return ss.str();
+    ret->insert(ret->end(), comp1->begin(), comp1->end());
+    if(literal(t, "||") && (comp2 = comparison(t)) != NULL){
+      ret->push_back(Token("||"));
+      ret->insert(ret->end(), comp2->begin(), comp2->end());
+      return ret;
     }
     else{
       curPos = curPosNow;
       return comp1;
     }
   }
-  else return "";
+  else return NULL;
 }
 
-string Parser::conjunction(vector<Token>* t){
-  string comp1, comp2;
-  if((comp1 = comparison(t)) != ""){
+vector<Token>* Parser::conjunction(vector<Token>* t){
+  vector<Token>* comp1;
+  vector<Token>* comp2;
+  vector<Token>* ret = new vector<Token>();
+  if((comp1 = comparison(t)) != NULL){
     int curPosNow = curPos;
-    if(literal(t, "&&") && (comp2 = comparison(t)) != ""){
-      stringstream ss;
-      ss << comp1 << " && " << comp2;
-      return ss.str();
+    ret->insert(ret->end(), comp1->begin(), comp1->end());
+    if(literal(t, "&&") && (comp2 = comparison(t)) != NULL){
+      ret->push_back(Token("&&"));
+      ret->insert(ret->end(), comp2->begin(), comp2->end());
+      return ret;
     }
     else{
       curPos = curPosNow;
-      return comp1;
+      return ret;
     }
   }
-  else return "";
+  else return NULL;
 }
 
-string Parser::comparison(vector<Token>* t){
+vector<Token>* Parser::comparison(vector<Token>* t){
+  int curPosNow = curPos;
   string op1, op2, oper;
   bool isValid = (op1 = operand(t)) != "" &&
     (oper = op(t)) != "" &&
     (op2 = operand(t)) != "";
   if(isValid){
-    stringstream ss;
-    ss << op1 << " " << oper << " " << op2;
-    return ss.str();
+    vector<Token>* ret = new vector<Token>();
+    ret->push_back(Token(op1));
+    ret->push_back(Token(oper));
+    ret->push_back(Token(op2));
+    return ret;
   }
-  else return "";
+  else{
+    curPos = curPosNow;
+    return NULL;
+  }
 }
 
 string Parser::op(vector<Token>* t){
@@ -487,7 +534,7 @@ bool Parser::updateCmd(vector<Token>* t){
     literal(t, "=") &&
     (literal(t) != "") &&
     literal(t, "WHERE") &&
-    (condition(t) != "");
+    (condition(t) != NULL);
   if(isValid){
     return true;
   }
@@ -556,12 +603,12 @@ vector<string>* Parser::literalList(vector<Token>* t){
 bool Parser::deleteCmd(vector<Token>* t){
   //TODO fix this
   string name;
-  string cond;
+  vector<Token>* cond;
   bool ret = literal(t, "DELETE") &&
     literal(t, "FROM") &&
     (name = relationName(t)) != "" &&
     literal(t, "WHERE") &&
-    (cond = condition(t)) != "";
+    (cond = condition(t)) != NULL;
   return ret;
 }
 

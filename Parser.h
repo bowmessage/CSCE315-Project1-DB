@@ -48,9 +48,9 @@ class Parser{
     Relation* productExpr(vector<Token>* t);
 
 
-    string condition(vector<Token>* t);
-    string conjunction(vector<Token>* t);
-    string comparison(vector<Token>* t);
+    vector<Token>* condition(vector<Token>* t);
+    vector<Token>* conjunction(vector<Token>* t);
+    vector<Token>* comparison(vector<Token>* t);
     string op(vector<Token>* t);
     string operand(vector<Token>* t);
     string attributeName(vector<Token>* t);
