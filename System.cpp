@@ -180,7 +180,7 @@ void showDeleteMenu(){
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 4:
-			break;
+		  break;
  	  }
  	}
 }
