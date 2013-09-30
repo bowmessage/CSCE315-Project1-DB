@@ -1,12 +1,14 @@
-#include "DatabaseManager.h"
+#include "Lexer.h"
 #include "System.h"
 #include <fstream>
 #include <iostream>
 
+Lexer lex;
+
 System::System(){}
 System::~System(){}
 
-DatabaseManager dbms;
+
 
 void addEmployee(){
 	string name, id, position;
@@ -56,6 +58,9 @@ void System::showMainMenu(){
 
 void System::showDisplayMenu(){
   int option = 0;
+  
+  lex.readFile("Employees");
+  
   string  input;
   while (option != 3){
     printf("DISPLAY MENU:\n 1)Single Customer/Product/Transaction\n 2)All\n 3)BACK TO MAIN MENU\n");
@@ -64,13 +69,13 @@ void System::showDisplayMenu(){
     	case 1:
     	  printf("Enter name of Customer/Product/Transaction:");
     	  cin >> input;
-	  printf("\nPrinting...\n");
-    	  dbms.show(input);
+	      printf("\nPrinting...\n");
+    	  (lex.p.man)->show(input);
     	  break;
     	case 2:
     	  printf("Printing all...\n");
-	  for(int i = 0; i < dbms.database.relations.size(); i++){
-	    dbms.show(&dbms.database.relations[i]);
+	  for(int i = 0; i < (lex.p.man)->database.relations.size(); i++){
+	    (lex.p.man)->show(&(lex.p.man)->database.relations[i]);
 	  }
     	  break;
     	case 3:
@@ -134,21 +139,21 @@ void showDeleteMenu(){
     		  printf("Enter name of Customer/Employee to be deleted:");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  dbms.deleteTable(input);
+    	  	  (lex.p.man)->deleteTable(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 2:
  	  	  printf("Enter name of Product to be deleted:");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  dbms.deleteTable(input);
+    	  	  (lex.p.man)->deleteTable(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 3:
  	  	  printf("Enter name of Transaction to be deleted:");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  dbms.deleteTable(input);
+    	  	  (lex.p.man)->deleteTable(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 4:
