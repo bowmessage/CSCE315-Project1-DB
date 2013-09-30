@@ -34,7 +34,7 @@ void addCustomer(){
 	string name, id, level;
 	printf("Please enter the new customer's name:\n");
 	cin >> name;
-	printf("Please enter the new customer's UPC number:\n");
+	printf("Please enter the new customer's ID number:\n");
 	cin >> id;
 	printf("Please enter the new customer's level:\n");
 	cin >> level;
@@ -55,7 +55,7 @@ void addProduct(){
 	int price, quant;
 	printf("Please enter the new product's name:\n");
 	cin >> name;
-	printf("Please enter the new product's ID number:\n");
+	printf("Please enter the new product's UPC number:\n");
 	cin >> id;
 	printf("Please enter the new product's price:\n");
 	cin >> price;
