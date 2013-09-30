@@ -112,10 +112,10 @@ void System::showMainMenu(){
       //System::showUpdateMenu();
       break;
     case 4:
-      //System::showDeleteMenu();
+      System::showDeleteMenu();
       break;
     case 5:
-		break;
+      break;
       //write all data to a file and close out 
     }
   }
