@@ -8,8 +8,8 @@ System::~System(){}
 
 void System::showMainMenu(){
   int option = 0;
-  while (option != 6){
-    printf("POINT OF SALE MENU: \n  1)Display  \n  2)Create  \n  3)Update  \n  4)Search  \n  5)Delete  \n  6)EXIT \n");
+  while (option != 5){
+    printf("POINT OF SALE MENU: \n  1)Display  \n  2)Create  \n  3)Update  \n  4)Delete  \n  5)EXIT \n");
     cin >> option;
     switch(option){
     case 1:
@@ -22,11 +22,10 @@ void System::showMainMenu(){
       //System::showUpdateMenu();
       break;
     case 4:
-      //System::showSearchMenu();
-      break;
-    case 5:
       //System::showDeleteMenu();
       break;
+    case 5:
+      //write all data to a file and close out 
     }
   }
   cout << "GOOD BYE";
@@ -47,7 +46,9 @@ void System::showDisplayMenu(){
     	  break;
     	case 2:
     	  printf("Printing all...\n")
-	  //s.dbms.show();
+	  for(int i = 0; i < s.dbms.database.relations.size(); i++){
+	    s.dbms.show(s.dbms.database.relations[i]);
+	  }
     	  break;
     	case 3:
         showMainMenu();
@@ -100,4 +101,26 @@ void System::showUpdateMenu(){
 	  }
 	}
 	showMainMenu();
+}
+
+void showDeleteMenu(){
+ 	int option = 0;
+ 	while(option != 4){
+ 	  printf("DELETE MENU:\n 1)Delete an employee/customer  \n 2) Delete a product \n 3)Delete a transaction \n 4) BACK TO MAIN MENU \n");
+ 	  cin >> option;
+ 	  switch (option){
+ 	  	case 1:
+ 	  	  printf("");
+ 	  	  break;
+ 	  	case 2:
+ 	  	  printf("");
+ 	  	  break;
+ 	  	case 3:
+ 	  	  printf("");
+ 	  	  break;
+ 	  	case 4:
+ 	  	  showMainMenu();
+ 	  }
+ 	}
+ 	showMainMenu();
 }
