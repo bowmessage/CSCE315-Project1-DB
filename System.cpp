@@ -30,6 +30,26 @@ void addEmployee(){
 	}
 }
 
+void addCustomer(){
+	string name, id, level;
+	printf("Please enter the new customer's name:\n");
+	cin >> name;
+	printf("Please enter the new customer's ID number:\n");
+	cin >> id;
+	printf("Please enter the new customer's level:\n");
+	cin >> level;
+	
+	ofstream file;
+	file.open("Customers", std::ios_base::app);
+	if(file.is_open()){
+		file << "INSERT INTO Customers VALUES FROM (\"" + name + "\", \"" + id + "\", \"" + level + "\");\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Customers\"\n");
+	}
+}
+
 void System::showMainMenu(){
   int option = 0;
   while (option != 5){
@@ -87,7 +107,7 @@ void System::showDisplayMenu(){
 void System::showCreateMenu(){
 	int option = 0;
 	while(option != 4){
-		printf("CREATE MENU:\n 1) Create an employee\n 2) Create a product\n 3) New transaction\n 4) BACK\n");
+		printf("CREATE MENU:\n 1) Create an employee\n 2) Create a customer\n 3) Create a product\n 4) New transaction\n 5) BACK\n");
 		cin >> option;
 	
 		switch(option){
@@ -95,12 +115,15 @@ void System::showCreateMenu(){
 				addEmployee();
 				break;
 			case 2:
-				printf("Create a new product here!\n");
+				addCustomer();
 				break;
 			case 3:
-				printf("Create a new transaction here!\n");
+				printf("Create a new product here!\n");
 				break;
 			case 4:
+				printf("Create a new transaction here!\n");
+				break;
+			case 5:
 				printf("Take it on back\n");
 				break;
 		}
