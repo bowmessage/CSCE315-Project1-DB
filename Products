@@ -1,0 +1,1 @@
+CREATE TABLE Products (Name VARCHAR(20), UPC VARCHAR(20), Price INTEGER, Quantity INTEGER);
