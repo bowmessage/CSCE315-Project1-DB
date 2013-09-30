@@ -1,5 +1,6 @@
 #include "DatabaseManager.h"
 #include "System.h"
+#include <fstream>
 #include <iostream>
 
 System::System(){}
@@ -46,6 +47,7 @@ void System::showMainMenu(){
       //System::showDeleteMenu();
       break;
     case 5:
+		break;
       //write all data to a file and close out 
     }
   }
@@ -66,13 +68,13 @@ void System::showDisplayMenu(){
     	  dbms.show(input);
     	  break;
     	case 2:
-    	  printf("Printing all...\n")
+    	  printf("Printing all...\n");
 	  for(int i = 0; i < dbms.database.relations.size(); i++){
-	    dbms.show(s.dbms.database.relations[i]);
+	    dbms.show(&dbms.database.relations[i]);
 	  }
     	  break;
     	case 3:
-	  break;
+			break;
     }
   }
 }
@@ -102,27 +104,28 @@ void System::showCreateMenu(){
 
 void System::showUpdateMenu(){
 	int option = 0;
-	while(option != ){
+	while(option != 4){
 	  printf("UPDATE MENU:\n 1)Update an employee/customer\n 2) Update a product\n 3)Update a transaction\n 4) BACK TO MAIN MENU\n");
 	  cin >> option;
 	  switch(option){
 		case 1:
 		  printf("");
 		  break;
-		case 2;
+		case 2:
 		  printf("");
 		  break;
 		case 3:
 		  printf("");
 		  break;
 		case 4:
-		  break;
+			break;
 	  }
 	}
 }
 
 void showDeleteMenu(){
  	int option = 0;
+	string input;
  	while(option != 4){
  	  printf("DELETE MENU:\n 1)Delete an employee/customer\n 2) Delete a product\n 3)Delete a transaction\n 4) BACK TO MAIN MENU\n");
  	  cin >> option;
@@ -149,7 +152,7 @@ void showDeleteMenu(){
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 4:
- 	  	  break;
+			break;
  	  }
  	}
 }
