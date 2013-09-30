@@ -6,8 +6,6 @@ System::System(){}
 System::~System(){}
 
 
-//this funciton is done, used to initialize the menu and program
-//a function will be made for each menu and sub menu to keep the main function clean and the program easier to debug
 void System::showMainMenu(){
   int option = 0;
   while (option != 6){
@@ -34,27 +32,30 @@ void System::showMainMenu(){
   cout << "GOOD BYE";
 }
 
-//need input from prof before continuing further
-/*void System::showDisplayMenu(){
+void System::showDisplayMenu(){
   int option = 0;
   string  input;
   while (option != 3){
-    printf("DISPLAY MENU:  \n  1)Single Customer/Product/Transaction  \n  2)All  \n  3)BACK TO MAIN MENU  \n ");
+    printf("DISPLAY MENU:  \n  1)Single Customer/Product/Transaction  	\n  2)All  \n  3)BACK TO MAIN MENU  \n ");
     cin >> option;
     switch(option){
     	case 1:
-    		printf("Enter name of Customer/Product/Transaction:");
-    		cin >> input;
-    		s.dbms.show(getRelationByName(input));
-    		break;
+    	  printf("Enter name of Customer/Product/Transaction:");
+    	  cin >> input;
+	  printf("\n");
+    	  s.dbms.show(getRelationByName(input));
+    	  break;
     	case 2:
-    		printf("")
-    	
+    	  printf("Printing all...\n")
+	  //s.dbms.show();
+    	  break;
     	case 3:
+        showMainMenu();
+	  break;
     }
-    
-	}
-}*/ 
+  }
+  showMainMenu();
+}
 
 void System::showCreateMenu(){
 	int option = 0;
@@ -64,7 +65,7 @@ void System::showCreateMenu(){
 	
 		switch(option){
 			case 1:
-				printf("Create a new employee here!\n");
+				printf("Create a new employee/customer here\n");
 				break;
 			case 2:
 				printf("Create a new product here!\n");
@@ -77,4 +78,26 @@ void System::showCreateMenu(){
 				break;
 		}
 	}
+}
+
+void System::showUpdateMenu(){
+	int option = 0;
+	while(option != ){
+	  printf("UPDATE MENU:\n 1)Update an employee/customer  \n 2) Update a product \n 3)Update a transaction \n 4) BACK TO MAIN MENU \n");
+	  cin >> option;
+	  switch(option){
+		case 1:
+		  printf("");
+		  break;
+		case 2;
+		  printf("");
+		  break;
+		case 3:
+		  printf("");
+		  break;
+		case 4:
+		  showMainMenu();
+	  }
+	}
+	showMainMenu();
 }
