@@ -61,20 +61,31 @@ bool DatabaseManager::deleteTable(string name){
   else return false;
 }
 
+void outputSpaces(int i){
+	for(int j = i; j >= 0; j--){
+		cout << " ";
+	}
+}
+
 void DatabaseManager::show(string name){
    Relation* curRelation = database.getRelationByName(name);
    if(curRelation == NULL){
 	  cout <<"Relation does not exist" << endl;
 	  return;
    }
-   cout << "|			" << name << "			|" << endl;
+   cout << "***********" << name << "***********" << endl;
    for(int i = 0; i < curRelation->attributes.size(); i++){
-     cout << "|" << curRelation->attributes[i].name << "\t\t";
+     cout << "|" << curRelation->attributes[i].name;
+	 int x = curRelation->attributes[i].name.size();
+	 outputSpaces(20-x);
    }
    cout << "\n======================================\n";
    for(int i = 0; i < curRelation->tuples.size(); i++){
       for(int j = 0; j < curRelation->tuples[i].size(); j++){
-	     cout << "|" << curRelation->tuples[i][j] << "\t\t";
+	     cout << "|" << curRelation->tuples[i][j];
+		 int x = curRelation->tuples[i][j].size();
+		 
+		 outputSpaces(20-x);
 	  }cout << "\n";
    }
    return;
@@ -85,14 +96,18 @@ void DatabaseManager::show(Relation* r){
 	  cout <<"Relation does not exist" << endl;
 	  return;
    }
-   cout << "|			" << r->name << "			|" << endl;
+   cout << "***********" << r->name << "***********" << endl;
    for(int i = 0; i < r->attributes.size(); i++){
-     cout << "|" << r->attributes[i].name << "\t\t";
+     cout << "|" << r->attributes[i].name;
+	 int x = r->attributes[i].name.size();
+	 outputSpaces(20-x);
    }
    cout << "\n======================================\n";
    for(int i = 0; i < r->tuples.size(); i++){
       for(int j = 0; j < r->tuples[i].size(); j++){
-	     cout << "|" << r->tuples[i][j] << "\t\t";
+	     cout << "|" << r->tuples[i][j];
+		 int x = r->tuples[i][j].size();
+		 outputSpaces(20-x);
 	  }cout << "\n";
    }
    return;
