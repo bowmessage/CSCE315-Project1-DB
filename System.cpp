@@ -122,7 +122,7 @@ void addProduct(){
 void addTransaction(){
 	string id, date, time;
 	int rev;
-	printf("Please enter the date (MM\DD\YYYY):\n");
+	printf("Please enter the date (MM\\DD\\YYYY):\n");
 	cin >> date;
 	printf("Please enter the time (HH:MM):");
 	cin >> time;
