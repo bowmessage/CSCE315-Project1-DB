@@ -65,7 +65,7 @@ void addProduct(){
 	ofstream file;
 	file.open("Products", std::ios_base::app);
 	if(file.is_open()){
-		file << "INSERT INTO Products VALUES FROM (\"" + name + "\", \"" + id + "\", \"" + price + "\", \"" + quant + "\");\n";
+		file << "INSERT INTO Products VALUES FROM (\"" + name + "\", \"" + id + "\", \"" << price << "\", \"" << quant << "\");\n";
 		file.close();
 	}
 	else{
@@ -88,7 +88,7 @@ void addTransaction(){
 	ofstream file;
 	file.open("Transactions", std::ios_base::app);
 	if(file.is_open()){
-		file << "INSERT INTO Transactions VALUES FROM (\"" + date + "\", \"" + time + "\", \"" + id + "\", \"" + rev + "\");\n";
+		file << "INSERT INTO Transactions VALUES FROM (\"" + date + "\", \"" + time + "\", \"" + id + "\", \"" << rev << "\");\n";
 		file.close();
 	}
 	else{
@@ -104,13 +104,13 @@ void updateEmployee(){
 	string old;
 	cin >> old;
 	printf("What do you want to change that attribute to?:");
-	string new;
-	cin >> new;
+	string changed;
+	cin >> changed;
 	
 	ofstream file;
-	file.open("Employees", std::ios_bas_app);
+	file.open("Employees", std::ios_base::app);
 	if(file.is_open()){
-		file << "UPDATE Employees SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";";
+		file << "UPDATE Employees SET" << attr << " = " << changed << "WHERE " << attr << " == " << old << ";";
 		file.close();
 	}
 	else{
@@ -126,13 +126,13 @@ void updateCustomer(){
 	string old;
 	cin >> old;
 	printf("What do you want to change that attribute to?:");
-	string new;
-	cin >> new;
+	string changed;
+	cin >> changed;
 	
 	ofstream file;
-	file.open("Customers", std::ios_bas_app);
+	file.open("Customers", std::ios_base::app);
 	if(file.is_open()){
-		file << "UPDATE Customers SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";";
+		file << "UPDATE Customers SET" << attr << " = " << changed << "WHERE " << attr << " == " << old << ";";
 		file.close();
 	}
 	else{
@@ -148,13 +148,13 @@ void updateProduct(){
 	string old;
 	cin >> old;
 	printf("What do you want to change that attribute to?:");
-	string new;
-	cin >> new;
+	string changed;
+	cin >> changed;
 	
 	ofstream file;
-	file.open("Products", std::ios_bas_app);
+	file.open("Products", std::ios_base::app);
 	if(file.is_open()){
-		file << "UPDATE Products SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";";
+		file << "UPDATE Products SET" << attr << " = " << changed << "WHERE " << attr << " == " << old << ";";
 		file.close();
 	}
 	else{
@@ -170,13 +170,13 @@ void updateTransaction(){
 	string old;
 	cin >> old;
 	printf("What do you want to change that attribute to?:");
-	string new;
-	cin >> new;
+	string changed;
+	cin >> changed;
 	
 	ofstream file;
-	file.open("Transactions", std::ios_bas_app);
+	file.open("Transactions", std::ios_base::app);
 	if(file.is_open()){
-		file << "UPDATE Transactions SET" << attr << " = " << new << "WHERE " << attr << " == " << old << ";";
+		file << "UPDATE Transactions SET" << attr << " = " << changed << "WHERE " << attr << " == " << old << ";";
 		file.close();
 	}
 	else{
@@ -287,7 +287,7 @@ void System::showUpdateMenu(){
 	}
 }
 
-void showDeleteMenu(){
+void System::showDeleteMenu(){
  	int option = 0;
 	string input;
  	while(option != 4){
