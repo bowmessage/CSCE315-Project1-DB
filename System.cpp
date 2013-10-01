@@ -336,33 +336,39 @@ void System::showUpdateMenu(){
 void System::showDeleteMenu(){
  	int option = 0;
 	string input;
- 	while(option != 4){
- 	  printf("DELETE MENU:\n 1)Delete an employee/customer\n 2) Delete a product\n 3)Delete a transaction\n 4) BACK TO MAIN MENU\n");
+ 	while(option != 5){
+ 	  printf("DELETE MENU:\n  1)Delete an employee\n  2) Delete a product\n  3)Delete a transaction\n  4) Delete a customer\n  5) BACK TO MAIN MENU\n");
  	  cin >> option;
  	  switch(option){
  	  	case 1:
-    		  printf("Enter name of Customer/Employee to be deleted:");
+    		  printf("Enter name of Employee to be deleted: \n");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  (lex.p.man)->deleteTable(input);
+    	  	  removeEmployee(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 2:
- 	  	  printf("Enter name of Product to be deleted:");
+ 	  	  printf("Enter name of Product to be deleted: \n");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  (lex.p.man)->deleteTable(input);
+    	  	  removeProduct(input);
     	  	  printf("\nDeleted.\n");
     		  break;
  	  	case 3:
- 	  	  printf("Enter name of Transaction to be deleted:");
+ 	  	  printf("Enter ID of Transaction to be deleted: \n");
     	   	  cin >> input;
 	  	  printf("\nDeleting...\n");
-    	  	  (lex.p.man)->deleteTable(input);
+    	  	  removeTransaction(input);
     	  	  printf("\nDeleted.\n");
     		  break;
- 	  	case 4:
-		  break;
+		case 4:
+			printf("Enter the name of Customer to be deleted: \n");
+			cin >> input;
+			printf("\nDeleting...\n");
+			removeCustomer(input);
+			break;
+ 	  	case 5:
+			break;
  	  }
  	}
 }
