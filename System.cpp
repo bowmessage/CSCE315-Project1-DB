@@ -8,7 +8,53 @@ Lexer lex;
 System::System(){}
 System::~System(){}
 
+void removeCustomer(string name){
+	ofstream file;
+	file.open("Customers", std::ios_base::app);
+	if(file.is_open()){
+		file << "DELETE FROM Customers WHERE Name == " + name + ";\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
 
+void removeTransaction(string name){
+	ofstream file;
+	file.open("Transactions", std::ios_base::app);
+	if(file.is_open()){
+		file << "DELETE FROM Transactions WHERE ID == " + name + ";\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
+
+void removeProduct(string name){
+	ofstream file;
+	file.open("Products", std::ios_base::app);
+	if(file.is_open()){
+		file << "DELETE FROM Products WHERE Name == " + name + ";\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Products\"\n");
+	}
+}
+
+void removeEmployee(string name){
+	ofstream file;
+	file.open("Employees", std::ios_base::app);
+	if(file.is_open()){
+		file << "DELETE FROM Employees WHERE name == " + name + ";\n";
+		file.close();
+	}
+	else{
+		printf("Cannot open file \"Employees\"\n");
+	}
+}
 
 void addEmployee(){
 	string name, id, position;
