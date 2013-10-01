@@ -105,7 +105,7 @@ void addProduct(){
 	cin >> id;
 	printf("Please enter the new product's price:\n");
 	cin >> price;
-	printf("Please enter the quantity of the new product:");
+	printf("Please enter the quantity of the new product:\n");
 	cin >> quant;
 	
 	ofstream file;
@@ -124,7 +124,7 @@ void addTransaction(){
 	int rev;
 	printf("Please enter the date (MM\\DD\\YYYY):\n");
 	cin >> date;
-	printf("Please enter the time (HH:MM):");
+	printf("Please enter the time (HH:MM):\n");
 	cin >> time;
 	printf("Please enter the new transaction's ID number:\n");
 	cin >> id;
@@ -144,12 +144,12 @@ void addTransaction(){
 
 void updateEmployee(){
 	string attr;
-	printf("Which employee attribute do you wish to update?:");
+	printf("Which employee attribute do you wish to update?:\n");
 	cin >> attr;
 	printf("What is the current value of the attribute you wish to update?:\n");
 	string old;
 	cin >> old;
-	printf("What do you want to change that attribute to?:");
+	printf("What do you want to change that attribute to?\n:");
 	string changed;
 	cin >> changed;
 	
@@ -171,7 +171,7 @@ void updateCustomer(){
 	printf("What is the current value of the attribute you wish to update?:\n");
 	string old;
 	cin >> old;
-	printf("What do you want to change that attribute to?:");
+	printf("What do you want to change that attribute to?:\n");
 	string changed;
 	cin >> changed;
 	
@@ -215,7 +215,7 @@ void updateTransaction(){
 	printf("What is the current value of the attribute you wish to update?:\n");
 	string old;
 	cin >> old;
-	printf("What do you want to change that attribute to?:");
+	printf("What do you want to change that attribute to?:\n");
 	string changed;
 	cin >> changed;
 	
@@ -243,7 +243,7 @@ void System::showMainMenu(){
       System::showCreateMenu();
       break;
     case 3:
-      //System::showUpdateMenu();
+      System::showUpdateMenu();
       break;
     case 4:
       System::showDeleteMenu();
@@ -260,6 +260,9 @@ void System::showDisplayMenu(){
   int option = 0;
   
   lex.readFile("Employees");
+  lex.readFile("Products");
+  lex.readFile("Customers");
+  lex.readFile("Transactions");
   
   string  input;
   while (option != 3){
